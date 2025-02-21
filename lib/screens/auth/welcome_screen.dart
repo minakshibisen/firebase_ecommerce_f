@@ -1,17 +1,22 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:firebase_ecommerce_f/screens/auth/sign_up_screen.dart';
+import 'package:firebase_ecommerce_f/controllers/google_sign_in_controller.dart';
+import 'package:firebase_ecommerce_f/screens/auth/sign_in_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:get/get.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+   const WelcomeScreen({super.key});
+
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final GoogleSignInController _googleSignInController = Get.put
+    (GoogleSignInController());
+
   @override
   Widget build(BuildContext context) {
     return FadeInUp(
@@ -53,7 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
                           onPressed: () {
-
+                            _googleSignInController.signInWithGoogle();
                           },
                           child: const Text(
                             'Sign in With google',
@@ -76,7 +81,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignUpScreen()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInScreen()));
                           },
                           child: const Text(
                             'Sign in With Email',
