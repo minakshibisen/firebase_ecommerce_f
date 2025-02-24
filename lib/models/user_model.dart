@@ -1,6 +1,7 @@
 class UserModel{
   final String uId;
   final String userName;
+  final String userCity;
   final String email;
   final String phone;
   final String userImg;
@@ -15,6 +16,7 @@ class UserModel{
   UserModel({
     required this.uId,
     required this.userName,
+    required this.userCity,
     required this.email,
     required this.phone,
     required this.userImg,
@@ -31,6 +33,7 @@ class UserModel{
     return{
       'uId':uId,
       'userName':userName,
+      'userCity':userCity,
       'email':email,
       'phone':phone,
       'userImg':userImg,
@@ -47,6 +50,7 @@ class UserModel{
     return UserModel(
       uId: map['uId'] ?? '',
       userName: map['userName'] ?? '',
+      userCity: map['userCity'] ?? '',
       email: map['email'] ?? '',
       phone: map['phone'] ?? '',
       userImg: map['userImg'] ?? '',

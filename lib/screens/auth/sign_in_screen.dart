@@ -1,9 +1,15 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ecommerce_f/controllers/get_user_data_controller.dart';
+import 'package:firebase_ecommerce_f/controllers/sign_in_controller.dart';
+import 'package:firebase_ecommerce_f/screens/admin-panel/admin_dashboard_screen.dart';
 import 'package:firebase_ecommerce_f/screens/auth/sign_up_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import '../../utils/input_field.dart';
+import '../user-panel/main_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -14,6 +20,9 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen>
     with SingleTickerProviderStateMixin {
+  final SignInController signInController = Get.put(SignInController());
+  final GetUserDataController getUserDataController =
+      Get.put(GetUserDataController());
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -77,14 +86,18 @@ class _SignInScreenState extends State<SignInScreen>
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Welcome!',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,color: AppConstant.appTextColor),
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: AppConstant.appTextColor),
                   ),
                 ),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Please login or sign up to continue our app',
-                    style: TextStyle(fontSize: 14, color: AppConstant.appTextColor),
+                    style: TextStyle(
+                        fontSize: 14, color: AppConstant.appTextColor),
                   ),
                 ),
                 SizedBox(height: size.height * 0.04),
@@ -95,7 +108,6 @@ class _SignInScreenState extends State<SignInScreen>
                     icon: Icons.email,
                     textInputAction: TextInputAction.next,
                     controller: emailController,
-                    obscureText: false,
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -106,7 +118,6 @@ class _SignInScreenState extends State<SignInScreen>
                     icon: Icons.lock,
                     textInputAction: TextInputAction.done,
                     controller: passwordController,
-                    obscureText: true,
                   ),
                 ),
                 SizedBox(height: size.height * 0.04),
@@ -115,20 +126,50 @@ class _SignInScreenState extends State<SignInScreen>
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.white, width: 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () {
+                      onPressed: () async {
+                        String email = emailController.text.trim();
+                        String password = passwordController.text.trim();
+                        if (email.isEmpty || password.isEmpty) {
+                          Get.snackbar("Error!!", "please enter all detail!!!",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: AppConstant.appMainColor,
+                              colorText: AppConstant.appSecondaryColor);
+                        } else {
+                          UserCredential? userCredential =
+                          await signInController.signInMethod(
+                            email,
+                            password,
+                          );
+                          var userData = await getUserDataController
+                              .getUserData(userCredential!.user!.uid);
+
+                          if (userCredential.user!.emailVerified) {
+                            if (userData[0]['isAdmin'] == true) {
+                              Get.snackbar(
+                                  "Success ", "Admin Login SuccessFull",
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: AppConstant.appMainColor,
+                                  colorText: AppConstant.appSecondaryColor);
+                              Get.offAll(() => AdminDashboardScreen());
+                            } else {
+                              Get.offAll(() => MainScreen());
+                            }
+                          } else {
+                            Get.snackbar("Error",
+                                "please verify your email before login",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: AppConstant.appMainColor,
+                                colorText: AppConstant.appSecondaryColor);
+                          }
+
+                          FirebaseAuth.instance.signOut();
+                          Get.offAll(() => MainScreen());
+                        }
                         //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInScreen()));
                       },
-                      child: const Text(
+                      child: Text(
                         'SignIn',
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(color: AppConstant.appMainColor),
                       ),
                     ),
                   ),
@@ -140,12 +181,15 @@ class _SignInScreenState extends State<SignInScreen>
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignUpScreen()));
-
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SignUpScreen()));
                     },
                     child: const Text(
                       "Don't have an account? Sign Up",
-                      style: TextStyle(fontSize: 14, color: AppConstant.appTextColor, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: AppConstant.appTextColor,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

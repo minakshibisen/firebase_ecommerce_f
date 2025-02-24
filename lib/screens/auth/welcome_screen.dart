@@ -1,21 +1,20 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:firebase_ecommerce_f/controllers/google_sign_in_controller.dart';
-import 'package:firebase_ecommerce_f/screens/auth/sign_in_screen.dart';
+import 'package:firebase_ecommerce_f/screens/auth/sign_up_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WelcomeScreen extends StatefulWidget {
-   const WelcomeScreen({super.key});
-
+  const WelcomeScreen({super.key});
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  final GoogleSignInController _googleSignInController = Get.put
-    (GoogleSignInController());
+  final GoogleSignInController _googleSignInController =
+      Get.put(GoogleSignInController());
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +27,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: Container(
                 color: AppConstant.appSecondaryColor,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children:[
-                    // Lottie.asset(
-                    //   'assets/images/splash.json',
-                    // ),
-                  ]
-                ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Lottie.asset(
+                      //   'assets/images/splash.json',
+                      // ),
+                    ]),
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 70),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 70),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -49,20 +48,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white, width: 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
                           onPressed: () {
                             _googleSignInController.signInWithGoogle();
                           },
-                          child: const Text(
+                          child: Text(
                             'Sign in With google',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(color: AppConstant.appMainColor),
                           ),
                         ),
                       ),
@@ -72,20 +63,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white, width: 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInScreen()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SignUpScreen()));
                           },
-                          child: const Text(
+                          child: Text(
                             'Sign in With Email',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(color: AppConstant.appMainColor),
                           ),
                         ),
                       ),

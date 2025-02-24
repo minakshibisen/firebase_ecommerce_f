@@ -1,7 +1,11 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ecommerce_f/controllers/sign_up_controller.dart';
 import 'package:firebase_ecommerce_f/screens/auth/sign_in_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../utils/input_field.dart';
@@ -13,8 +17,9 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
-  // Controllers for Input Fields
+class _SignUpScreenState extends State<SignUpScreen>
+    with SingleTickerProviderStateMixin {
+  final SignUpController signUpController = Get.put(SignUpController());
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -40,7 +45,8 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
       curve: Curves.easeIn,
     );
 
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeOut,
@@ -88,14 +94,18 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Welcome!',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: AppConstant.appTextColor),
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: AppConstant.appTextColor),
                   ),
                 ),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Please login or sign up to continue our app',
-                    style: TextStyle(fontSize: 14, color: AppConstant.appTextColor),
+                    style: TextStyle(
+                        fontSize: 14, color: AppConstant.appTextColor),
                   ),
                 ),
                 SizedBox(height: size.height * 0.04),
@@ -106,7 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     hintText: 'Email',
                     icon: Icons.email,
                     textInputAction: TextInputAction.next,
-                    controller: emailController, obscureText: false,
+                    controller: emailController,
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -115,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     hintText: 'User Name',
                     icon: Icons.person,
                     textInputAction: TextInputAction.next,
-                    controller: usernameController, obscureText: false,
+                    controller: usernameController,
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -125,7 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     icon: Icons.phone,
                     textInputAction: TextInputAction.next,
                     controller: phoneController,
-                    keyboardType: TextInputType.phone, obscureText: false,
+                    keyboardType: TextInputType.phone,
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -136,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     icon: Icons.lock,
                     textInputAction: TextInputAction.done,
                     controller: passwordController,
-                    obscureText: true,
+
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -145,46 +155,71 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     hintText: 'City',
                     icon: Icons.location_city,
                     textInputAction: TextInputAction.done,
-                    controller: cityController, obscureText: false,
+                    controller: cityController,
+
                   ),
                 ),
                 SizedBox(height: size.height * 0.04),
 
                 // Sign In Button
-              FadeInUpBig(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white, width: 1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
+                FadeInUpBig(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        String name = usernameController.text.trim();
+                        String email = emailController.text.trim();
+                        String phone = phoneController.text.trim();
+                        String city = cityController.text.trim();
+                        String password = passwordController.text.trim();
+                        String userDeviceToken = '';
+                        if (name.isEmpty ||
+                            email.isEmpty ||
+                            phone.isEmpty ||
+                            city.isEmpty ||
+                            password.isEmpty) {
+                          Get.snackbar("Error!!", "please enter all detail!!!",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: AppConstant.appMainColor,
+                              colorText: AppConstant.appSecondaryColor);
+                        } else {
+                          UserCredential? userCredential =
+                              await signUpController.signUpMethod(name, email,
+                                  phone, city, password, userDeviceToken);
+                          if (userCredential != null) {
+                            Get.snackbar("Verification email sent.",
+                                "please check email",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: AppConstant.appMainColor,
+                                colorText: AppConstant.appSecondaryColor);
+                            FirebaseAuth.instance.signOut();
+                            Get.offAll(() => SignInScreen());
+                          }
+                          //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInScreen()));
+                        }
+                      },
+                      child: Text(
+                        'SignUp',
+                        style: TextStyle(color: AppConstant.appMainColor),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    onPressed: () {
-                      //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInScreen()));
-                    },
-                    child: const Text(
-                      'SignUp',
-                      style: TextStyle(fontSize: 18),
                     ),
                   ),
                 ),
-              ),
                 SizedBox(height: size.height * 0.02),
 
-                // Sign Up Link
                 Align(
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInScreen()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SignInScreen()));
                     },
                     child: const Text(
                       "Don't have an account? SignIn",
-                      style: TextStyle(fontSize: 14, color: AppConstant.appTextColor, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: AppConstant.appTextColor,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
