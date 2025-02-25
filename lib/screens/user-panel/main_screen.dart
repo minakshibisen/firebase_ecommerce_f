@@ -1,5 +1,11 @@
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
+import 'package:firebase_ecommerce_f/widgets/category_widget.dart';
+import 'package:firebase_ecommerce_f/widgets/flash_sale_widget.dart';
+import 'package:firebase_ecommerce_f/widgets/heading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../widgets/banner_widget.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,9 +18,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppConstant.appSecondaryColor,
       appBar: AppBar(
         backgroundColor: AppConstant.appMainColor,
-          title: Text(AppConstant.appMainName,textAlign: TextAlign.center),
+        title: Text(
+          AppConstant.appMainName,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppConstant.appSecondaryColor),
+        ),
         centerTitle: true,
       ),
       drawer: Drawer(
@@ -24,11 +35,8 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(
               height: 250,
               child: DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
-                child:
-                Column(
+                decoration: const BoxDecoration(color: Colors.black),
+                child: Column(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(50),
@@ -37,60 +45,70 @@ class _MainScreenState extends State<MainScreen> {
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child:
-                      const Icon(Icons.tune_rounded, color: Colors.black,),
+                          const Icon(Icons.tune_rounded, color: Colors.black),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 20),
                     const Text(
                       'Minkashi Bisen',
-                      style: TextStyle(fontSize: 20,color: Colors.white),
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ],
                 ),
               ),
             ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text(' My Profile '),
-              onTap: () {
-
-              },
+            _drawerItem(Icons.person, 'My Profile'),
+            _drawerItem(Icons.book, 'My Order'),
+            _drawerItem(Icons.workspace_premium, 'Offers'),
+            _drawerItem(Icons.video_label, 'My Favorite'),
+            _drawerItem(Icons.edit, 'Edit Profile'),
+            _drawerItem(Icons.logout, 'LogOut'),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            SizedBox(height: Get.height / 90.0),
+            const BannerWidget(),
+            SizedBox(height: Get.height / 90.0),
+            HeadingWidget(
+              headingTitle: 'Categories',
+              headingSubTItle: 'According to your budget',
+              onTap: () {},
+              buttonText: 'See More >',
             ),
-            ListTile(
-              leading: const Icon(Icons.book),
-              title: const Text(' My Order '),
-              onTap: () {
-              },
+            SizedBox(height: Get.height / 90.0),
+            const CategoryWidget(),
+            SizedBox(height: Get.height / 90.0),
+            HeadingWidget(
+              headingTitle: 'Flash Sale',
+              headingSubTItle: 'Grab the best deals',
+              onTap: () {},
+              buttonText: 'See More >',
             ),
-            ListTile(
-              leading: const Icon(Icons.workspace_premium),
-              title: const Text(' Offers '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.video_label),
-              title: const Text(' My Favorite'),
-              onTap: () {
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text(' Edit Profile '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('LogOut'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+            SizedBox(height: Get.height / 90.0),
+            const FlashSaleWidget(),
+            SizedBox(height: Get.height / 90.0),
+            HeadingWidget(
+              headingTitle: 'All Product',
+              headingSubTItle: 'All Product',
+              onTap: () {},
+              buttonText: 'See More >',
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _drawerItem(IconData icon, String title) {
+    return ListTile(
+      leading: Icon(icon, color: AppConstant.appSecondaryColor),
+      title: Text(title, style: const TextStyle(color: AppConstant.appSecondaryColor)),
+      onTap: () {
+        Navigator.pop(context);
+      },
     );
   }
 }
