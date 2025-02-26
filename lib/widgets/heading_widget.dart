@@ -36,22 +36,23 @@ class HeadingWidget extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.normal,
                     color: Colors.grey),
+
               ),
             ],
           ),
-          GestureDetector(
-            onTap: onTap,
-            child: SizedBox(
-                width: 100,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: Text(
-                    buttonText,
-                    style: TextStyle(
-                        color: AppConstant.appTextColor, fontSize: 13),
-                  ),
-                )),
-          )
+          SizedBox(
+            width: 100,
+            child: OutlinedButton(
+              onPressed: onTap, // ✅ Now correctly calls the onTap function
+              child: Text(
+                buttonText,
+                style: TextStyle(
+                  color: AppConstant.appTextColor,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

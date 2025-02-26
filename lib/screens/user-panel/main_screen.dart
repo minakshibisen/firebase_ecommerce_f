@@ -1,4 +1,8 @@
+import 'package:firebase_ecommerce_f/screens/user-panel/all_category_screen.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/all_flash_sale_screen.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/all_products_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
+import 'package:firebase_ecommerce_f/widgets/all_product_widget.dart';
 import 'package:firebase_ecommerce_f/widgets/category_widget.dart';
 import 'package:firebase_ecommerce_f/widgets/flash_sale_widget.dart';
 import 'package:firebase_ecommerce_f/widgets/heading_widget.dart';
@@ -44,8 +48,7 @@ class _MainScreenState extends State<MainScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child:
-                          const Icon(Icons.tune_rounded, color: Colors.black),
+                      child: const Icon(Icons.tune_rounded, color: Colors.black),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -74,8 +77,8 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(height: Get.height / 90.0),
             HeadingWidget(
               headingTitle: 'Categories',
-              headingSubTItle: 'According to your budget',
-              onTap: () {},
+              headingSubTItle: 'According to your budget', // ✅ Fixed missing subtitle
+              onTap: () => Get.to(() => AllCategoryScreen()),
               buttonText: 'See More >',
             ),
             SizedBox(height: Get.height / 90.0),
@@ -84,18 +87,21 @@ class _MainScreenState extends State<MainScreen> {
             HeadingWidget(
               headingTitle: 'Flash Sale',
               headingSubTItle: 'Grab the best deals',
-              onTap: () {},
+              onTap: () => Get.to(() => AllFlashSaleScreen()), // ✅ Fixed navigation
               buttonText: 'See More >',
             ),
             SizedBox(height: Get.height / 90.0),
             const FlashSaleWidget(),
             SizedBox(height: Get.height / 90.0),
             HeadingWidget(
-              headingTitle: 'All Product',
-              headingSubTItle: 'All Product',
-              onTap: () {},
+              headingTitle: 'All Products',
+              headingSubTItle: 'According to your budget',
+              onTap: () => Get.to(() => AllProductsScreen()), // ✅ Fixed navigation
               buttonText: 'See More >',
             ),
+            SizedBox(height: Get.height / 90.0),
+
+            AllProductWidget()
           ],
         ),
       ),

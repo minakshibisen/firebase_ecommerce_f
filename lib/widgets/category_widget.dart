@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_imagecards/flutter_imagecards.dart';
 import 'package:get/get.dart';
 
+import '../screens/user-panel/single_category_product_screen.dart';
+
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({super.key});
 
@@ -48,20 +50,23 @@ class CategoryWidget extends StatelessWidget {
                     );
                     return Row(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: FillImageCards(
-                            width: Get.width / 4.0,
-                            heightImage: Get.height / 12,
-                            borderRadius: 20.0,
-                            imageProvider: CachedNetworkImageProvider(
-                              categoryModel.category,
+                        GestureDetector(
+                          onTap: ()=>Get.to(SingleCategoryProductScreen(catId:categoryModel.catId)),
+                          child: Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: FillImageCards(
+                              width: Get.width / 4.0,
+                              heightImage: Get.height / 12,
+                              borderRadius: 20.0,
+                              imageProvider: CachedNetworkImageProvider(
+                                categoryModel.category,
+                              ),
+                              title: Center(
+                                  child: Text(
+                                categoryModel.catName,
+                                style: TextStyle(fontSize: 12.0),
+                              )),
                             ),
-                            title: Center(
-                                child: Text(
-                              categoryModel.catName,
-                              style: TextStyle(fontSize: 12.0),
-                            )),
                           ),
                         )
                       ],
