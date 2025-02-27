@@ -2,17 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ecommerce_f/models/cart_model.dart';
 import 'package:firebase_ecommerce_f/models/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../utils/app-constant.dart';
+import 'cart_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel productModel;
 
-  const ProductDetailScreen({super.key, required this.productModel});
+  const ProductDetailScreen({super.key, required this.productModel, });
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -35,6 +37,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   User? user = FirebaseAuth.instance.currentUser;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +69,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               fit: BoxFit.cover,
                               width: Get.width,
                               height: Get.height * 0.5,
-                              placeholder: (context, url) =>
-                              const Center(child: CupertinoActivityIndicator()),
+                              placeholder: (context, url) => const Center(
+                                  child: CupertinoActivityIndicator()),
                               errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                                  const Icon(Icons.error),
                             ),
                           );
                         }).toList(),
@@ -86,8 +90,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       child: CircleAvatar(
                         backgroundColor: Colors.black,
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors
-                              .white),
+                          icon:
+                              const Icon(Icons.arrow_back, color: Colors.white),
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                       ),
@@ -100,21 +104,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           CircleAvatar(
                             backgroundColor: Colors.white,
                             child: IconButton(
-                              icon: const Icon(
-                                  Icons.favorite_border, color: Colors.black),
-                              onPressed: () {},
+                              icon: const Icon(Icons.favorite_border,
+                                  color: Colors.black),
+                              onPressed: () {})) ],
                             ),
                           ),
                           const SizedBox(width: 10),
+                    Positioned(
+                      top: 40,
+                      right: 20,
+                      child: Row(
+                        children: [
                           CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                              icon: const Icon(Icons.shopping_bag_outlined,
-                                  color: Colors.black),
-                              onPressed: () {},
-                            ),
-                          ),
-                        ],
+                              backgroundColor: Colors.white,
+                              child: IconButton(
+                                  icon: const Icon(Icons.shopping_bag_outlined,
+                                      color: Colors.black),
+                                  onPressed: () async {
+                                    Get.to(() => CartScreen());
+                                  }))  ],
                       ),
                     ),
                   ],
@@ -154,8 +162,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             Row(
                               children: List.generate(
                                 5,
-                                    (index) =>
-                                const Icon(Icons.star,
+                                (index) => const Icon(Icons.star,
                                     color: Colors.amber, size: 20),
                               ),
                             ),
@@ -179,14 +186,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             DropdownButton<String>(
                               value: selectedColor,
                               icon: const Icon(
-                                Icons.arrow_drop_down, color: Colors.white,),
+                                Icons.arrow_drop_down,
+                                color: Colors.white,
+                              ),
                               onChanged: (String? newValue) {
                                 setState(() {
                                   selectedColor = newValue!;
                                 });
                               },
                               items: colors.map<DropdownMenuItem<String>>(
-                                    (String color) {
+                                (String color) {
                                   return DropdownMenuItem<String>(
                                     value: color,
                                     child: Container(
@@ -195,10 +204,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         color: color == "Black"
                                             ? Colors.black
                                             : color == "Green"
-                                            ? Colors.green
-                                            : color == "White"
-                                            ? Colors.white
-                                            : Colors.orange,
+                                                ? Colors.green
+                                                : color == "White"
+                                                    ? Colors.white
+                                                    : Colors.orange,
                                         borderRadius: BorderRadius.circular(10),
                                         border: Border.all(color: Colors.black),
                                       ),
@@ -206,7 +215,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       height: 30,
                                       child: color == selectedColor
                                           ? const Icon(Icons.check,
-                                          color: Colors.white, size: 18)
+                                              color: Colors.white, size: 18)
                                           : null,
                                     ),
                                   );
@@ -266,8 +275,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         SizedBox(height: Get.height / 50),
                         Text(
                           widget.productModel.productDescription,
-                          style: const TextStyle(fontSize: 14, color: Colors
-                              .grey),
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
                         ),
                         const SizedBox(height: 10),
                         // Additional product details...
@@ -283,8 +292,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             left: 0,
             right: 0,
             child: Container(
-              margin: const EdgeInsets.symmetric(
-                  horizontal: 5, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
               padding: const EdgeInsets.only(
                   top: 10, left: 15, right: 15, bottom: 5),
               color: Colors.white,
@@ -302,8 +310,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       Text(
-                        "\$${(double.tryParse(widget.productModel.fullPrice) ??
-                            0 * quantity).toStringAsFixed(2)}",
+                        "\$${(double.tryParse(widget.productModel.fullPrice) ?? 0 * quantity).toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -356,10 +363,54 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Future<void> checkProductExistence( {required String uId,
+  Future<void> checkProductExistence({
+    required String uId,
+    int quantityIncrement =1,
   }) async {
-    final DocumentReference documentReference = FirebaseFirestore.instance.collection('cart').doc(uId);
+    final DocumentReference documentReference = FirebaseFirestore.instance
+        .collection('cart')
+        .doc(uId)
+        .collection('cartOrders')
+        .doc(widget.productModel.productId.toString());
 
+    DocumentSnapshot snapshot = await documentReference.get();
+//already cart me product hai to uski quantity add ho jayegi
+    if (snapshot.exists) {
+      int currentQuantity = snapshot['productQuantity'];
+      int updatedQuantity = currentQuantity + quantityIncrement;
+      double totalPrice = double.parse(widget.productModel.fullPrice) *
+          updatedQuantity;
+      await documentReference.update({
+        'productQuantity': updatedQuantity,
+        'productTotalPrice': totalPrice
+      });
+      print('Product exists');
+    } else {
+      await FirebaseFirestore.instance.collection('cart').doc(uId).set({
+        'uId': uId,
+        'createdAt': DateTime.now(),
+      });
+      CartModel cartModel = CartModel(productId: widget.productModel.productId,
+          catId: widget.productModel.catId,
+          productName: widget.productModel.productName,
+          catName: widget.productModel.catName,
+          salePrice: widget.productModel.salePrice,
+          fullPrice: widget.productModel.fullPrice,
+          productImg: widget.productModel.productImg,
+          deliveryTime: widget.productModel.deliveryTime,
+          isSale: widget.productModel.isSale,
+          productDescription: widget.productModel.productDescription,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          productQuantity: 1,
+          productTotalPrice: double.parse(widget.productModel.fullPrice));
+
+      await documentReference.set(cartModel.toMap());
+      print('Product Done');
+
+
+
+    }
   }
-
 }
+

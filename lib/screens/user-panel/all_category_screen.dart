@@ -88,14 +88,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                     );
                   } );
 
-               /* SizedBox(
-                height: Get.height / 5,
-                child: ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder:),
-              );*/
+
             }
             return Container();
           }),

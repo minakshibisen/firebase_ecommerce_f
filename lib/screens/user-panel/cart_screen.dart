@@ -1,195 +1,315 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
+import 'package:firebase_ecommerce_f/utils/app-constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:get/get.dart';
 
-import '../../models/product_model.dart';
+import '../../utils/common_util.dart';
 
 class CartScreen extends StatefulWidget {
-  final CartModel cartModel ;
-
-  const CartScreen({super.key, required this.cartModel});
+  const CartScreen({super.key});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  List<Map<String, dynamic>> cartItems = [
-    {
-      "image": "assets/images/img_1.png",
-      "name": "Roller Rabbit",
-      "description": "Vado Odelle Dress",
-      "price": "\$198.00",
-    },
-    {
-      "image": "assets/images/img_2.png",
-      "name": "Endless Rose",
-      "description": "Chic Summer Dress",
-      "price": "\$220.00",
-    },
-    {
-      "image": "assets/images/img_3.png",
-      "name": "Axel Arigato",
-      "description": "Clean 90 Sneakers",
-      "price": "\$245.00",
-    },
-  ];
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-      ),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 30),
-              const Text(
-                'My Cart',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 25),
-
-              Expanded(
-                child: ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
-                    return cartItemCard(
-                      cartItems[index]["image"],
-                      cartItems[index]["name"],
-                      cartItems[index]["description"],
-                      cartItems[index]["price"],
-                    );
-                  },
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    minimumSize: Size(double.infinity, size.height * 0.07), // Dynamic height
-                  ),
-                  onPressed: () {
-
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Proceed to Checkout",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: const Icon(Icons.arrow_forward, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        backgroundColor: AppConstant.appSecondaryColor,
+        appBar: AppBar(
+          title: Text('Cart Product '),
+          backgroundColor: AppConstant.appMainColor,
         ),
-      ),
-    );
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('cart')
+                .doc(user!.uid)
+                .collection('cartOrders')
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error'),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  height: Get.height / 5,
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                );
+              }
+              if (snapshot.data!.docs.isEmpty) {
+                return Center(
+                  child: Text('No Category Found!'),
+                );
+              }
+              if (snapshot.data != null) {
+                return SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 20),
+                    child: Container(
+                      color: Colors.black,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final cartData = snapshot.data!.docs[index];
+                                print(cartData['productTotalPrice']);
+                                String imageUrl;
+                                if (cartData['productImg'] is List &&
+                                    cartData['productImg'].isNotEmpty) {
+                                  imageUrl = cartData['productImg'][0];
+                                } else {
+                                  imageUrl = cartData['productImg']
+                                      .toString(); // Convert to string
+                                }
+                                CartModel cartModel = CartModel(
+                                    productId: cartData['productId'].toString(),
+                                    catId: cartData['catId'].toString(),
+                                    productName:
+                                        cartData['productName'].toString(),
+                                    catName: cartData['catName'].toString(),
+                                    salePrice: cartData['salePrice'].toString(),
+                                    fullPrice: cartData['fullPrice'].toString(),
+                                    productImg: imageUrl,
+                                    deliveryTime:
+                                        cartData['deliveryTime'].toString(),
+                                    isSale: cartData['isSale'],
+                                    productDescription:
+                                        cartData['productDescription'].toString(),
+                                    createdAt: cartData['createdAt'],
+                                    updatedAt: cartData['updatedAt'],
+                                    productQuantity: cartData['productQuantity'],
+                                    productTotalPrice: (double.tryParse(
+                                        cartData['productTotalPrice']
+                                            .toString()) ?? 0.0));
+                                return SwipeActionCell(
+                                  key: ObjectKey(cartModel.productId),
+                                  backgroundColor: Colors.black,
+                                  trailingActions: [
+                                    SwipeAction(
+                                      onTap: (CompletionHandler handler) async {
+                                        print('deleted');
+
+                                        await FirebaseFirestore.instance
+                                            .collection('cart')
+                                            .doc(user?.uid)
+                                            .collection('cartOrders')
+                                            .doc(cartModel.productId)
+                                            .delete();
+                                      },
+                                      title: 'DELETE',
+                                      forceAlignmentToBoundary: true,
+                                      performsFirstActionWithFullSwipe: true,
+                                      color: AppConstant.radColor,
+                                    )
+                                  ],
+                                  child: cartItemCard(cartModel: cartModel),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                minimumSize: Size(double.infinity,
+                                    size.height * 0.07), // Dynamic height
+                              ),
+                              onPressed: () {},
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Proceed to Checkout",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: const Icon(Icons.arrow_forward,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return Container();
+            }));
   }
-  Widget cartItemCard(String image, String name, String description, String price) {
+
+  Widget cartItemCard({required CartModel cartModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.grey[100],
-      margin: const EdgeInsets.only(bottom: 10),
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
           children: [
-            // Product Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                image,
-                height: 80, // Responsive size
-                width: 80,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Product Image
+                CachedNetworkImage(
+                  imageUrl: cartModel.productImg,
+                  height: 80,
+                  width: 100,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+                const SizedBox(width: 15),
 
-            // Product Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    description,
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Price and Quantity Controls
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // Product Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        price,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        cartModel.productName,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(20),
+                      Text(
+                        cartModel.productDescription,
+                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:[Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          (cartModel.salePrice),
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.normal),
                         ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove, size: 18),
-                              onPressed: () {},
-                            ),
-                            const Text(
-                              '1',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.add, size: 18),
-                              onPressed: () {},
-                            ),
-                          ],
+                        SizedBox(width: 5,),
+                        Text(
+                          (cartModel.fullPrice),
+                          style: const TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              fontSize: 14,
+                              color: Colors.red,
+                              fontWeight: FontWeight.normal),
                         ),
+                      ],
+                    ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text(
+                            'Total Price: ',
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            (cartModel.productTotalPrice).toString(),
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      )
+                    ]
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove, size: 18),
+                        onPressed: () => updateQuantity(
+                            cartModel.productQuantity - 1, cartModel),
+                      ),
+                      Text(
+                        cartModel.productQuantity.toString(),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add, size: 18),
+                        onPressed: () => updateQuantity(
+                            cartModel.productQuantity + 1, cartModel),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  void updateQuantity(int count, CartModel cartModel) async {
+    if(count <= 0) return;
+
+    cartModel.productQuantity = count;
+    cartModel.productTotalPrice = count * (stringToNumber(cartModel.salePrice));
+    await FirebaseFirestore.instance
+        .collection('cart')
+        .doc(user?.uid)
+        .collection('cartOrders')
+        .doc(cartModel.productId)
+        .update({
+      'productQuantity': cartModel.productQuantity,
+      'productTotalPrice': cartModel.productTotalPrice
+    });
   }
 }

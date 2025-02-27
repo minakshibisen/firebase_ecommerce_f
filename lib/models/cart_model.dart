@@ -11,8 +11,8 @@ class CartModel {
   final String productDescription;
   final dynamic createdAt;
   final dynamic updatedAt;
-  final int productQuantity;
-  final double productTotalPrice;
+  int productQuantity;
+  num productTotalPrice;
 
   CartModel({
     required this.productId,
@@ -32,6 +32,7 @@ class CartModel {
   });
 
   Map<String, dynamic> toMap() {
+
     return {
       'productId': productId,
       'catId': catId,
@@ -51,6 +52,7 @@ class CartModel {
   }
 
   factory CartModel.fromMap(Map<String, dynamic> json) {
+    print(json);
     return CartModel(
       productId: json['productId'] ?? '',
       catId: json['catId'] ?? '',

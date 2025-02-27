@@ -30,5 +30,6 @@ class SignInController extends GetxController {
           backgroundColor: AppConstant.appMainColor,
           colorText: AppConstant.appSecondaryColor);
     }
+    return null;
   }
 }

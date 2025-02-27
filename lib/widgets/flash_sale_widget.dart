@@ -91,8 +91,7 @@ class FlashSaleWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                        )
-                      ],
+                        )],
                     );
                   }),
             );
