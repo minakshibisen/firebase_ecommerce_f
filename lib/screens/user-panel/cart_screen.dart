@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ecommerce_f/controllers/product_price_controller.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,8 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   User? user = FirebaseAuth.instance.currentUser;
+  final ProductPriceController productPriceController =
+      Get.put(ProductPriceController());
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +82,7 @@ class _CartScreenState extends State<CartScreen> {
                                     cartData['productImg'].isNotEmpty) {
                                   imageUrl = cartData['productImg'][0];
                                 } else {
-                                  imageUrl = cartData['productImg']
-                                      .toString(); // Convert to string
+                                  imageUrl = cartData['productImg'].toString();
                                 }
                                 CartModel cartModel = CartModel(
                                     productId: cartData['productId'].toString(),
@@ -95,13 +97,18 @@ class _CartScreenState extends State<CartScreen> {
                                         cartData['deliveryTime'].toString(),
                                     isSale: cartData['isSale'],
                                     productDescription:
-                                        cartData['productDescription'].toString(),
+                                        cartData['productDescription']
+                                            .toString(),
                                     createdAt: cartData['createdAt'],
                                     updatedAt: cartData['updatedAt'],
-                                    productQuantity: cartData['productQuantity'],
+                                    productQuantity:
+                                        cartData['productQuantity'],
                                     productTotalPrice: (double.tryParse(
-                                        cartData['productTotalPrice']
-                                            .toString()) ?? 0.0));
+                                            cartData['productTotalPrice']
+                                                .toString()) ??
+                                        0.0));
+
+                                productPriceController.fetchProductPrice();
                                 return SwipeActionCell(
                                   key: ObjectKey(cartModel.productId),
                                   backgroundColor: Colors.black,
@@ -129,36 +136,59 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                           ),
                           SizedBox(
+                            height:100,
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                minimumSize: Size(double.infinity,
-                                    size.height * 0.07), // Dynamic height
-                              ),
-                              onPressed: () {},
+                            child: Container(
+                              color: Colors.white,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    "Proceed to Checkout",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 25),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          "Total Price",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppConstant.appSecondaryColor,
+                                          ),
+                                        ),
+                                        Text(
+                                          'रु ${productPriceController.totalPrice.value.toString()}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: AppConstant.appSecondaryColor,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    child: const Icon(Icons.arrow_forward,
-                                        color: Colors.black),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Proceed to Checkout",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                        SizedBox(width: 8,),
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          child: const Icon(Icons.arrow_forward,
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -210,13 +240,12 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       Text(
                         cartModel.productDescription,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.grey),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
-
-
                     ],
                   ),
                 ),
@@ -226,44 +255,44 @@ class _CartScreenState extends State<CartScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          (cartModel.salePrice),
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.normal),
-                        ),
-                        SizedBox(width: 5,),
-                        Text(
-                          (cartModel.fullPrice),
-                          style: const TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              fontSize: 14,
-                              color: Colors.red,
-                              fontWeight: FontWeight.normal),
-                        ),
-                      ],
-                    ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          Text(
-                            'Total Price: ',
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            (cartModel.productTotalPrice).toString(),
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )
-                    ]
-                ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        (cartModel.salePrice),
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.normal),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        (cartModel.fullPrice),
+                        style: const TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            fontSize: 14,
+                            color: Colors.red,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text(
+                        'Total Price: ',
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        (cartModel.productTotalPrice).toString(),
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )
+                ]),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
@@ -298,7 +327,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void updateQuantity(int count, CartModel cartModel) async {
-    if(count <= 0) return;
+    if (count <= 0) return;
 
     cartModel.productQuantity = count;
     cartModel.productTotalPrice = count * (stringToNumber(cartModel.salePrice));
