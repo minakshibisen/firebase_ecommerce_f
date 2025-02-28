@@ -1,37 +1,40 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ecommerce_f/controllers/get_customer_device_token_controller.dart';
 import 'package:firebase_ecommerce_f/controllers/product_price_controller.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
-import 'package:firebase_ecommerce_f/screens/user-panel/checkout_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
 
+import '../../services/place_order_service.dart';
 import '../../utils/common_util.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class CheckoutScreen extends StatefulWidget {
+  const CheckoutScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CheckoutScreenState extends State<CheckoutScreen> {
   User? user = FirebaseAuth.instance.currentUser;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   final ProductPriceController productPriceController =
       Get.put(ProductPriceController());
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-
     return Scaffold(
         backgroundColor: AppConstant.appSecondaryColor,
         appBar: AppBar(
-          title: Text('Cart Product '),
+          title: Text('Checkout Screen'),
           backgroundColor: AppConstant.appMainColor,
         ),
         body: StreamBuilder(
@@ -77,7 +80,9 @@ class _CartScreenState extends State<CartScreen> {
                               physics: BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 final cartData = snapshot.data!.docs[index];
-                                print(cartData['productTotalPrice']);
+                                if (kDebugMode) {
+                                  print(cartData['productTotalPrice']);
+                                }
                                 String imageUrl;
                                 if (cartData['productImg'] is List &&
                                     cartData['productImg'].isNotEmpty) {
@@ -116,7 +121,9 @@ class _CartScreenState extends State<CartScreen> {
                                   trailingActions: [
                                     SwipeAction(
                                       onTap: (CompletionHandler handler) async {
-                                        print('deleted');
+                                        if (kDebugMode) {
+                                          print('deleted');
+                                        }
 
                                         await FirebaseFirestore.instance
                                             .collection('cart')
@@ -137,38 +144,47 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                           ),
                           SizedBox(
-                            height:100,
+                            height: 100,
                             width: double.infinity,
                             child: Container(
                               color: Colors.white,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 25),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 25),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const Text(
                                           "Total Price",
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
-                                            color: AppConstant.appSecondaryColor,
+                                            color:
+                                                AppConstant.appSecondaryColor,
                                           ),
                                         ),
-                                        Text(
-                                          'रु ${productPriceController.totalPrice.value.toString()}',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: AppConstant.appSecondaryColor,
+                                        Obx(
+                                          () => Text(
+                                            'रु ${productPriceController.totalPrice.value.toString()}',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color:
+                                                  AppConstant.appSecondaryColor,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap:()=>Get.to(CheckoutScreen()),
+                                    onTap: () {
+                                      showCustomBottomSheet();
+                                    },
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
@@ -177,18 +193,22 @@ class _CartScreenState extends State<CartScreen> {
                                             padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
                                               color: Colors.black,
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                             ),
                                             child: Row(
                                               children: [
                                                 const Text(
-                                                  "Checkout",
+                                                  "Confirm Order",
                                                   style: TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white),
                                                 ),
-                                                SizedBox(width: 6,),
+                                                SizedBox(
+                                                  width: 6,
+                                                ),
                                                 Icon(Icons.arrow_forward,
                                                     color: Colors.white),
                                               ],
@@ -285,47 +305,46 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text(
-                        'Total Price: ',
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        (cartModel.productTotalPrice).toString(),
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  )
                 ]),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove, size: 18),
-                        onPressed: () => updateQuantity(
-                            cartModel.productQuantity - 1, cartModel),
-                      ),
-                      Text(
-                        cartModel.productQuantity.toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add, size: 18),
-                        onPressed: () => updateQuantity(
-                            cartModel.productQuantity + 1, cartModel),
-                      ),
-                    ],
-                  ),
-                ),
+                Row(
+                  children: [
+                    Text(
+                      'Total Price: ',
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      (cartModel.productTotalPrice).toString(),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                )
+                // Container(
+                //   decoration: BoxDecoration(
+                //     color: Colors.grey[200],
+                //     borderRadius: BorderRadius.circular(20),
+                //   ),
+                //   child: Row(
+                //     children: [
+                //       IconButton(
+                //         icon: const Icon(Icons.remove, size: 18),
+                //         onPressed: () => updateQuantity(
+                //             cartModel.productQuantity - 1, cartModel),
+                //       ),
+                //       Text(
+                //         cartModel.productQuantity.toString(),
+                //         style: TextStyle(
+                //             fontSize: 16, fontWeight: FontWeight.bold),
+                //       ),
+                //       IconButton(
+                //         icon: const Icon(Icons.add, size: 18),
+                //         onPressed: () => updateQuantity(
+                //             cartModel.productQuantity + 1, cartModel),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ],
@@ -348,5 +367,116 @@ class _CartScreenState extends State<CartScreen> {
       'productQuantity': cartModel.productQuantity,
       'productTotalPrice': cartModel.productTotalPrice
     });
+  }
+
+  void showCustomBottomSheet() {
+    Get.bottomSheet(Container(
+      height: Get.height * 0.4,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50.0))),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: SizedBox(
+                height: 40.0,
+                child: TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                      labelText: 'Name',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20.00),
+                      hintStyle: TextStyle(fontSize: 12)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: SizedBox(
+                height: 55.0,
+                child: TextFormField(
+                  controller: phoneController,
+                  decoration: InputDecoration(
+                      labelText: 'Mobile',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.00),
+                      hintStyle: TextStyle(fontSize: 12)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: SizedBox(
+                height: 55.0,
+                child: TextFormField(
+                  controller: addressController,
+                  decoration: InputDecoration(
+                      labelText: 'Address',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.00),
+                      hintStyle: TextStyle(fontSize: 12)),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                if (nameController.text != '' &&
+                    phoneController.text != '' &&
+                    addressController.text != '') {
+                  String name = nameController.text.trim();
+                  String phone = phoneController.text.trim();
+                  String address = addressController.text.trim();
+
+
+                  String customerToken = await getCoustomerDeviceTokenController();
+                  placeOrder(
+                    context :context,
+                    customerName:name,
+                    customerAddress:address,
+                    customerPhone:phone,
+                    customerDeviceToken:customerToken,
+                  );
+
+                } else {
+                  print('please fill all detail');
+                }
+
+
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Confirm Order",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Icon(Icons.arrow_forward, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }

@@ -108,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _drawerItem(IconData icon, String title) {
+  Widget _drawerItem(IconData icon, String title,) {
     return ListTile(
       leading: Icon(icon, color: AppConstant.appSecondaryColor),
       title: Text(title, style: const TextStyle(color: AppConstant.appSecondaryColor)),
