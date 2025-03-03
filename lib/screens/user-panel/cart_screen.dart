@@ -66,7 +66,7 @@ class _CartScreenState extends State<CartScreen> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 15.0, horizontal: 20),
                     child: Container(
-                      color: Colors.black,
+                      color: AppConstant.appSecondaryColor,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -112,7 +112,7 @@ class _CartScreenState extends State<CartScreen> {
                                 productPriceController.fetchProductPrice();
                                 return SwipeActionCell(
                                   key: ObjectKey(cartModel.productId),
-                                  backgroundColor: Colors.black,
+                                  backgroundColor: AppConstant.appSecondaryColor,
                                   trailingActions: [
                                     SwipeAction(
                                       onTap: (CompletionHandler handler) async {
@@ -140,7 +140,7 @@ class _CartScreenState extends State<CartScreen> {
                             height:100,
                             width: double.infinity,
                             child: Container(
-                              color: Colors.white,
+                              color: AppConstant.appMainColor,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
@@ -176,7 +176,7 @@ class _CartScreenState extends State<CartScreen> {
                                           Container(
                                             padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
-                                              color: Colors.black,
+                                              color: AppConstant.appSecondaryColor,
                                               borderRadius: BorderRadius.circular(15),
                                             ),
                                             child: Row(
@@ -186,11 +186,11 @@ class _CartScreenState extends State<CartScreen> {
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight: FontWeight.bold,
-                                                      color: Colors.white),
+                                                      color: AppConstant.appMainColor),
                                                 ),
                                                 SizedBox(width: 6,),
                                                 Icon(Icons.arrow_forward,
-                                                    color: Colors.white),
+                                                    color: AppConstant.appMainColor),
                                               ],
                                             ),
                                           ),
@@ -215,7 +215,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget cartItemCard({required CartModel cartModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.white,
+      color: AppConstant.appMainColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

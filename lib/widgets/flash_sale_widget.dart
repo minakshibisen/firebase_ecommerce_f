@@ -69,6 +69,7 @@ class FlashSaleWidget extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.all(5.0),
                             child: FillImageCards(
+                              color: AppConstant.gray,
                               width: Get.width / 3,
                               heightImage: Get.height / 10,
                               borderRadius: 20.0,

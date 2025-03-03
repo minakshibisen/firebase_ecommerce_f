@@ -28,12 +28,12 @@ class HeadingWidget extends StatelessWidget {
               Text(
                 headingTitle,
                 style:
-                    TextStyle(fontSize: 18, color: AppConstant.appTextColor),
+                    TextStyle(fontSize: 22, color: AppConstant.appMainColor2,fontWeight: FontWeight.bold),
               ),
               Text(
                 headingSubTItle,
                 style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 16,
                     fontWeight: FontWeight.normal,
                     color: Colors.grey),
 
@@ -47,8 +47,8 @@ class HeadingWidget extends StatelessWidget {
               child: Text(
                 buttonText,
                 style: TextStyle(
-                  color: AppConstant.appTextColor,
-                  fontSize: 13,
+                  color: AppConstant.appMainColor2,
+                  fontSize: 16,
                 ),
               ),
             ),

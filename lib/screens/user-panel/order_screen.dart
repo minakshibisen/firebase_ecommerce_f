@@ -2,32 +2,27 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/controllers/product_price_controller.dart';
-import 'package:firebase_ecommerce_f/models/cart_model.dart';
-import 'package:firebase_ecommerce_f/screens/user-panel/checkout_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
 
 import '../../models/order_model.dart';
-import '../../utils/common_util.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class OrderScreen extends StatefulWidget {
+  const OrderScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
+  State<OrderScreen> createState() => _OrderScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _OrderScreenState extends State<OrderScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   final ProductPriceController productPriceController =
   Get.put(ProductPriceController());
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
 
     return Scaffold(
         backgroundColor: AppConstant.appSecondaryColor,
@@ -45,7 +40,7 @@ class _CartScreenState extends State<CartScreen> {
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Center(
-                  child: Text('Err or'),
+                  child: Text('Error'),
                 );
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -58,7 +53,7 @@ class _CartScreenState extends State<CartScreen> {
               }
               if (snapshot.data!.docs.isEmpty) {
                 return Center(
-                  child: Text('No Category Found!'),
+                  child: Text('No Order Found!'),
                 );
               }
               if (snapshot.data != null) {
@@ -67,7 +62,7 @@ class _CartScreenState extends State<CartScreen> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 15.0, horizontal: 20),
                     child: Container(
-                      color: Colors.black,
+                      color: AppConstant.appSecondaryColor,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -78,14 +73,6 @@ class _CartScreenState extends State<CartScreen> {
                               physics: BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 final data = snapshot.data!.docs[index];
-                                print(data['productTotalPrice']);
-                                String imageUrl;
-                                if (data['productImg'] is List &&
-                                    data['productImg'].isNotEmpty) {
-                                  imageUrl = data['productImg'][0];
-                                } else {
-                                  imageUrl = data['productImg'].toString();
-                                }
                                 OrderModel orderModel = OrderModel(
                                     productId: data['productId'].toString(),
                                     catId: data['catId'].toString(),
@@ -108,6 +95,9 @@ class _CartScreenState extends State<CartScreen> {
                                     customerName: data['customerName'],
                                     customerAddress:data['customerAddress'],
                                     customerDeviceId: data['customerDeviceId'],);
+                                productPriceController.fetchProductPrice();
+                                return
+                                  cartItemCard(orderModel: orderModel);
 
                               },
                             ),
@@ -117,16 +107,19 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ),
                   ),
+
+
                 );
               }
               return Container();
+
             }));
   }
 
   Widget cartItemCard({required OrderModel orderModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.white,
+      color: AppConstant.appMainColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -208,19 +201,4 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  void updateQuantity(int count, CartModel cartModel) async {
-    if (count <= 0) return;
-
-    cartModel.productQuantity = count;
-    cartModel.productTotalPrice = count * (stringToNumber(cartModel.salePrice));
-    await FirebaseFirestore.instance
-        .collection('cart')
-        .doc(user?.uid)
-        .collection('cartOrders')
-        .doc(cartModel.productId)
-        .update({
-      'productQuantity': cartModel.productQuantity,
-      'productTotalPrice': cartModel.productTotalPrice
-    });
-  }
 }

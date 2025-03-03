@@ -9,7 +9,7 @@ class SignUpController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  var isPasswordVisibe = false.obs;
+  var isPasswordVisible = false.obs;
 
   Future<UserCredential?> signUpMethod(
     String userName,

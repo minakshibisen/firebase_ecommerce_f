@@ -35,68 +35,71 @@ class AllProductWidget extends StatelessWidget {
             );
           }
           if (snapshot.data != null) {
-            return GridView.builder(
-                itemCount: snapshot.data!.docs.length,
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 3,
-                    crossAxisSpacing: 3,
-                    childAspectRatio: 0.80),
-                itemBuilder: (context, index) {
-                  final productData = snapshot.data!.docs[index];
-                  String imageUrl;
-                  if (productData['productImg'] is List && productData['productImg'].isNotEmpty) {
-                    imageUrl = productData['productImg'][0];
-                  } else {
-                    imageUrl = productData['productImg'].toString();
-                  }
-                  ProductModel productModel = ProductModel(
-                      productId:productData['productId'] .toString(),
-                      catId: productData['catId'].toString(),
-                      productName:productData ['productName'].toString(),
-                      catName:productData ['catName'].toString(),
-                      salePrice: productData ['salePrice'].toString(),
-                      fullPrice: productData ['fullPrice'].toString(),
-                      productImg:imageUrl,
-                      deliveryTime: productData['deliveryTime'].toString(),
-                      isSale: productData['isSale'],
-                      productDescription:productData ['productDescription'].toString(),
-                      createdAt: productData['createdAt'],
-                      updatedAt:productData ['updatedAt']);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GridView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 3,
+                      childAspectRatio: .7),
+                  itemBuilder: (context, index) {
+                    final productData = snapshot.data!.docs[index];
+                    String imageUrl;
+                    if (productData['productImg'] is List && productData['productImg'].isNotEmpty) {
+                      imageUrl = productData['productImg'][0];
+                    } else {
+                      imageUrl = productData['productImg'].toString();
+                    }
+                    ProductModel productModel = ProductModel(
+                        productId:productData['productId'] .toString(),
+                        catId: productData['catId'].toString(),
+                        productName:productData ['productName'].toString(),
+                        catName:productData ['catName'].toString(),
+                        salePrice: productData ['salePrice'].toString(),
+                        fullPrice: productData ['fullPrice'].toString(),
+                        productImg:imageUrl,
+                        deliveryTime: productData['deliveryTime'].toString(),
+                        isSale: productData['isSale'],
+                        productDescription:productData ['productDescription'].toString(),
+                        createdAt: productData['createdAt'],
+                        updatedAt:productData ['updatedAt']);
 
-                  return Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Get.to(() => ProductDetailScreen(productModel:productModel)),
-                        child: Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: FillImageCards(
-                            width: Get.width / 2.3,
-                            heightImage: Get.height / 10,
-                            borderRadius: 20.0,
-                            imageProvider: CachedNetworkImageProvider(
-                              productModel.productImg.isNotEmpty ? productModel.productImg : 'https://images-cdn.ubuy.co.in/678980cc7e4e461a695c48ae-scarfs-for-women-winter-scarf-for.jpg',
-                            ),
-                            title: Text(
-                              productModel.productName,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12.0,fontWeight: FontWeight.bold),
-                            ),
-                            description: SizedBox(height: 2.0,),
-                            footer: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(' ${productModel.fullPrice}',style: TextStyle(fontSize: 10,decoration: TextDecoration.lineThrough,color:AppConstant.radColor,fontWeight: FontWeight.bold),),
-                              ],
+                    return Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Get.to(() => ProductDetailScreen(productModel:productModel)),
+                          child: Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: FillImageCards(
+                              color: AppConstant.gray,
+                              width: Get.width / 2.3,
+                              heightImage: Get.height / 5,
+                              borderRadius: 20.0,
+                              imageProvider: CachedNetworkImageProvider(
+                                productModel.productImg.isNotEmpty ? productModel.productImg : 'https://images-cdn.ubuy.co.in/678980cc7e4e461a695c48ae-scarfs-for-women-winter-scarf-for.jpg',
+                              ),
+                              title: Text(
+                                productModel.productName,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.normal,),
+                              ),
+                              footer: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text('Rs.${productModel.fullPrice}',style: TextStyle(fontSize: 14,color:AppConstant.appMainColor2,fontWeight: FontWeight.bold),),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  );
-                } );
+                        )
+                      ],
+                    );
+                  } ),
+            );
           }
           return Container();
         });

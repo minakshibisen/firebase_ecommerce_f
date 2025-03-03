@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../utils/app-constant.dart';
+
 class BannerWidget extends StatefulWidget {
   const BannerWidget({super.key});
 
@@ -29,7 +31,7 @@ class _BannerWidgetState extends State<BannerWidget> {
                           fit: BoxFit.cover,
                           width: Get.width - 10,
                           placeholder: (context, url) => ColoredBox(
-                              color: Colors.white,
+                              color: AppConstant.appMainColor,
                               child: Center(
                                 child: CupertinoActivityIndicator(),
                               )),

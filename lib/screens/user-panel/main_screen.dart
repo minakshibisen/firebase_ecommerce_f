@@ -1,6 +1,7 @@
 import 'package:firebase_ecommerce_f/screens/user-panel/all_category_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_flash_sale_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_products_screen.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/order_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:firebase_ecommerce_f/widgets/all_product_widget.dart';
 import 'package:firebase_ecommerce_f/widgets/category_widget.dart';
@@ -24,47 +25,79 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: AppConstant.appSecondaryColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Builder(
+          builder: (context) => GestureDetector(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Container(
+                margin: const EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Icon(
+                  Icons.menu_open,
+                  size: 25,
+                  color: AppConstant.appMainColor2,
+                ),
+              ),
+            ),
+          ),
+        ),
+        toolbarHeight: 80,
+
         backgroundColor: AppConstant.appMainColor,
         title: Text(
           AppConstant.appMainName,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppConstant.appSecondaryColor),
+          style: TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
         ),
         centerTitle: true,
       ),
+
       drawer: Drawer(
+        backgroundColor: Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             SizedBox(
               height: 250,
               child: DrawerHeader(
-                decoration: const BoxDecoration(color: Colors.black),
+                decoration:
+                    const BoxDecoration(color: AppConstant.appSecondaryColor),
                 child: Column(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(50),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppConstant.appMainColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: const Icon(Icons.tune_rounded, color: Colors.black),
+                      child: const Icon(Icons.tune_rounded,
+                          color: AppConstant.appSecondaryColor),
                     ),
                     const SizedBox(height: 20),
                     const Text(
                       'Minkashi Bisen',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 20, color: AppConstant.appMainColor),
                     ),
                   ],
                 ),
               ),
             ),
-            _drawerItem(Icons.person, 'My Profile'),
-            _drawerItem(Icons.book, 'My Order'),
-            _drawerItem(Icons.workspace_premium, 'Offers'),
-            _drawerItem(Icons.video_label, 'My Favorite'),
-            _drawerItem(Icons.edit, 'Edit Profile'),
-            _drawerItem(Icons.logout, 'LogOut'),
+            _drawerItem(Icons.person, 'My Profile', () {}),
+            _drawerItem(Icons.book, 'My Order', () {
+              Get.to(() => OrderScreen());
+            }),
+            _drawerItem(Icons.workspace_premium, 'Offers', () {}),
+            _drawerItem(Icons.video_label, 'My Favorite', () {}),
+            _drawerItem(Icons.edit, 'Edit Profile', () {}),
+            _drawerItem(Icons.logout, 'LogOut', () {}),
           ],
         ),
       ),
@@ -77,30 +110,27 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(height: Get.height / 90.0),
             HeadingWidget(
               headingTitle: 'Categories',
-              headingSubTItle: 'According to your budget', // ✅ Fixed missing subtitle
+              headingSubTItle: 'According to your budget',
+              // ✅ Fixed missing subtitle
               onTap: () => Get.to(() => AllCategoryScreen()),
               buttonText: 'See More >',
             ),
-            SizedBox(height: Get.height / 90.0),
             const CategoryWidget(),
-            SizedBox(height: Get.height / 90.0),
             HeadingWidget(
               headingTitle: 'Flash Sale',
               headingSubTItle: 'Grab the best deals',
-              onTap: () => Get.to(() => AllFlashSaleScreen()), // ✅ Fixed navigation
+              onTap: () => Get.to(() => AllFlashSaleScreen()),
+              // ✅ Fixed navigation
               buttonText: 'See More >',
             ),
-            SizedBox(height: Get.height / 90.0),
             const FlashSaleWidget(),
-            SizedBox(height: Get.height / 90.0),
             HeadingWidget(
               headingTitle: 'All Products',
               headingSubTItle: 'According to your budget',
-              onTap: () => Get.to(() => AllProductsScreen()), // ✅ Fixed navigation
+              onTap: () => Get.to(() => AllProductsScreen()),
+              // ✅ Fixed navigation
               buttonText: 'See More >',
             ),
-            SizedBox(height: Get.height / 90.0),
-
             AllProductWidget()
           ],
         ),
@@ -108,13 +138,16 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _drawerItem(IconData icon, String title,) {
+  Widget _drawerItem(
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
     return ListTile(
-      leading: Icon(icon, color: AppConstant.appSecondaryColor),
-      title: Text(title, style: const TextStyle(color: AppConstant.appSecondaryColor)),
-      onTap: () {
-        Navigator.pop(context);
-      },
+      leading: Icon(icon, color: AppConstant.appMainColor),
+      title:
+          Text(title, style: const TextStyle(color: AppConstant.appMainColor)),
+      onTap: onTap,
     );
   }
 }

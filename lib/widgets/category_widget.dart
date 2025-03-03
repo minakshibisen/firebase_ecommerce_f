@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ecommerce_f/models/category_model.dart';
+import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_imagecards/flutter_imagecards.dart';
 import 'package:get/get.dart';
 
@@ -49,12 +51,14 @@ class CategoryWidget extends StatelessWidget {
                       updatedAt: snapshot.data?.docs[index]['updatedAt'],
                     );
                     return Row(
+
                       children: [
                         GestureDetector(
                           onTap: ()=>Get.to(SingleCategoryProductScreen(catId:categoryModel.catId)),
                           child: Padding(
                             padding: EdgeInsets.all(5.0),
                             child: FillImageCards(
+                              color: AppConstant.gray,
                               width: Get.width / 4.0,
                               heightImage: Get.height / 12,
                               borderRadius: 20.0,

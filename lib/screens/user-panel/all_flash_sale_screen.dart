@@ -84,34 +84,45 @@ class _AllFlashSaleScreenState extends State<AllFlashSaleScreen> {
                 onTap: () => Get.to(() => ProductDetailScreen(productModel: productModel)),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: FillImageCards(
-                    width: Get.width / 2.3,
-                    heightImage: Get.height / 5, // Increased image height
-                    borderRadius: 15.0,
-                    imageProvider: CachedNetworkImageProvider(imageUrl),
-                    title: Text(
-                      productModel.productName,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                  child:Container(
+                    decoration: BoxDecoration(
+                      color: AppConstant.gray, // Background color
+                      borderRadius: BorderRadius.circular(15.0),
+                      border: Border.all(
+                        color: AppConstant.borderColor, // Change this to your desired border color
+                        width: 1.0, // Border thickness
+                      ),
                     ),
-                    description: const SizedBox(height: 4.0),
-                    footer: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Rs ${productModel.salePrice}',
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          ' ${productModel.fullPrice}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            decoration: TextDecoration.lineThrough,
-                            color: AppConstant.radColor,
-                            fontWeight: FontWeight.bold,
+                    child: FillImageCards(
+                      color: Colors.transparent, // Remove internal color to use container's color
+                      width: double.infinity,
+                      heightImage: Get.height / 5,
+                      borderRadius: 15.0,
+                      imageProvider: CachedNetworkImageProvider(imageUrl),
+                      title: Text(
+                        productModel.productName,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                      ),
+                      description: const SizedBox(height: 4.0),
+                      footer: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Rs ${productModel.salePrice}',
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ],
+                          Text(
+                            ' ${productModel.fullPrice}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              decoration: TextDecoration.lineThrough,
+                              color: AppConstant.radColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

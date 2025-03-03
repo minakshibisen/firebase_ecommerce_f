@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 
 import '../../services/place_order_service.dart';
 import '../../utils/common_util.dart';
+import 'order_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -69,7 +70,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 15.0, horizontal: 20),
                     child: Container(
-                      color: Colors.black,
+                      color: AppConstant.appSecondaryColor,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -117,7 +118,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 productPriceController.fetchProductPrice();
                                 return SwipeActionCell(
                                   key: ObjectKey(cartModel.productId),
-                                  backgroundColor: Colors.black,
+                                  backgroundColor: AppConstant.appSecondaryColor,
                                   trailingActions: [
                                     SwipeAction(
                                       onTap: (CompletionHandler handler) async {
@@ -147,7 +148,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             height: 100,
                             width: double.infinity,
                             child: Container(
-                              color: Colors.white,
+                              color: AppConstant.appMainColor,
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -192,7 +193,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           Container(
                                             padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
-                                              color: Colors.black,
+                                              color: AppConstant.appSecondaryColor,
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                             ),
@@ -204,13 +205,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.white),
+                                                      color: AppConstant.appMainColor),
                                                 ),
                                                 SizedBox(
                                                   width: 6,
                                                 ),
                                                 Icon(Icons.arrow_forward,
-                                                    color: Colors.white),
+                                                    color: AppConstant.appMainColor),
                                               ],
                                             ),
                                           ),
@@ -235,7 +236,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget cartItemCard({required CartModel cartModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.white,
+      color: AppConstant.appMainColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -373,7 +374,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     Get.bottomSheet(Container(
       height: Get.height * 0.4,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppConstant.appMainColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(50.0))),
       child: SingleChildScrollView(
         child: Column(
@@ -431,15 +432,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                   String customerToken = await getCoustomerDeviceTokenController();
                   placeOrder(
-                    context :context,
+                    context: context,
                     customerName:name,
                     customerAddress:address,
                     customerPhone:phone,
                     customerDeviceToken:customerToken,
                   );
-
+                  Get.to(() => OrderScreen());
                 } else {
-                  print('please fill all detail');
+                  if (kDebugMode) {
+                    print('please fill all detail');
+                  }
                 }
 
 
@@ -451,7 +454,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: AppConstant.appSecondaryColor,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(
@@ -461,12 +464,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                                color: AppConstant.appMainColor),
                           ),
                           SizedBox(
                             width: 6,
                           ),
-                          Icon(Icons.arrow_forward, color: Colors.white),
+                          Icon(Icons.arrow_forward, color: AppConstant.appMainColor),
                         ],
                       ),
                     ),

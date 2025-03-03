@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'app-constant.dart';
+
 class InputFieldWidget extends StatefulWidget {
   final String hintText;
   final IconData icon;
@@ -58,7 +60,7 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
             Icon(
               widget.icon,
               size: 22,
-              color: Colors.black,
+              color: AppConstant.appSecondaryColor,
             ),
           const SizedBox(width: 15.0),
           Expanded(
@@ -76,7 +78,7 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
               canRequestFocus: !widget.isReadOnly,
               showCursor: !widget.isReadOnly,
               onChanged: widget.onChanged,
-              style: const TextStyle(fontSize: 14, color: Colors.black), // Ensures text is visible
+              style: const TextStyle(fontSize: 14, color: AppConstant.appSecondaryColor), // Ensures text is visible
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: widget.hintText,
@@ -95,7 +97,7 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
               },
               icon: Icon(
                 passwordVisible ? Icons.visibility : Icons.visibility_off,
-                color: Colors.black,
+                color: AppConstant.appSecondaryColor,
               ),
             )
         ],

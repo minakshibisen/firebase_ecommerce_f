@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/main_screen.dart';
 import 'package:firebase_ecommerce_f/services/generate_order_id.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../models/order_model.dart';
+import '../utils/app-constant.dart';
 
 void placeOrder(
     {required BuildContext context,
@@ -88,18 +88,22 @@ void placeOrder(
               .delete();
         }
       }
-      print('Order Confirm');
+      if (kDebugMode) {
+        print('Order Confirm');
+      }
       Get.snackbar(
         'Order Confirmed',
         "Thank you for your order!",
-        backgroundColor: Colors.white,
-        colorText: Colors.black,
+        backgroundColor: AppConstant.appMainColor,
+        colorText: AppConstant.appSecondaryColor,
         duration: Duration(seconds: 5),
       );
       EasyLoading.dismiss();
       Get.offAll(()=>MainScreen());
     } catch (e) {
-      print('Error$e');
+      if (kDebugMode) {
+        print('Error$e');
+      }
     }
   }
 }

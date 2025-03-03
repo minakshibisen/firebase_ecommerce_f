@@ -14,7 +14,10 @@ import 'cart_screen.dart';
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel productModel;
 
-  const ProductDetailScreen({super.key, required this.productModel, });
+  const ProductDetailScreen({
+    super.key,
+    required this.productModel,
+  });
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -38,8 +41,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
 
-
-
   @override
   Widget build(BuildContext context) {
     List<String> images = [];
@@ -51,85 +52,77 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppConstant.appSecondaryColor,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Container(
+            margin: const EdgeInsets.all(3.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: Icon(
+              Icons.arrow_back_sharp,
+              size: 25,
+              color: AppConstant.appMainColor2,
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+                backgroundColor: AppConstant.appSecondaryColor,
+                child: IconButton(
+                    icon: const Icon(Icons.shopping_bag_outlined,
+                        color: AppConstant.appMainColor2),
+                    onPressed: () async {
+                      Get.to(() => CartScreen());
+                    })),
+          )
+        ],
+        toolbarHeight: 80,
+        backgroundColor: AppConstant.appMainColor,
+        title: Text(
+          AppConstant.appMainName,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
+        ),
+        centerTitle: true,
+      ),
       body: Stack(
         children: [
           Column(
             children: [
               Expanded(
                 flex: 10,
-                child: Stack(
-                  children: [
-                    SafeArea(
-                      child: CarouselSlider(
-                        items: images.map((imageUrl) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(0.0),
-                            child: CachedNetworkImage(
-                              imageUrl: imageUrl.trim(),
-                              fit: BoxFit.cover,
-                              width: Get.width,
-                              height: Get.height * 0.5,
-                              placeholder: (context, url) => const Center(
-                                  child: CupertinoActivityIndicator()),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ),
-                          );
-                        }).toList(),
-                        options: CarouselOptions(
-                          autoPlay: true,
-                          aspectRatio: 1.5,
-                          viewportFraction: 1,
-                          scrollDirection: Axis.horizontal,
-                        ),
+                child: CarouselSlider(
+                  items: images.map((imageUrl) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(0.0),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl.trim(),
+                        fit: BoxFit.cover,
+                        width: Get.width,
+                        height: Get.height * 0.5,
+                        placeholder: (context, url) => const Center(
+                            child: CupertinoActivityIndicator()),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      left: 20,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.black,
-                        child: IconButton(
-                          icon:
-                              const Icon(Icons.arrow_back, color: Colors.white),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      right: 20,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                              icon: const Icon(Icons.favorite_border,
-                                  color: Colors.black),
-                              onPressed: () {})) ],
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                    Positioned(
-                      top: 40,
-                      right: 20,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                              backgroundColor: Colors.white,
-                              child: IconButton(
-                                  icon: const Icon(Icons.shopping_bag_outlined,
-                                      color: Colors.black),
-                                  onPressed: () async {
-                                    Get.to(() => CartScreen());
-                                  }))  ],
-                      ),
-                    ),
-                  ],
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 1.5,
+                    viewportFraction: 1,
+                    scrollDirection: Axis.horizontal,
+                  ),
                 ),
               ),
               Expanded(
-                flex: 15,
+                flex: 18,
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: const BoxDecoration(
@@ -187,7 +180,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               value: selectedColor,
                               icon: const Icon(
                                 Icons.arrow_drop_down,
-                                color: Colors.white,
+                                color: AppConstant.appMainColor,
                               ),
                               onChanged: (String? newValue) {
                                 setState(() {
@@ -202,20 +195,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
                                         color: color == "Black"
-                                            ? Colors.black
+                                            ? AppConstant.appSecondaryColor
                                             : color == "Green"
                                                 ? Colors.green
                                                 : color == "White"
-                                                    ? Colors.white
+                                                    ? AppConstant.appMainColor
                                                     : Colors.orange,
                                         borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: Colors.black),
+                                        border: Border.all(
+                                            color:
+                                                AppConstant.appSecondaryColor),
                                       ),
                                       width: 30,
                                       height: 30,
                                       child: color == selectedColor
                                           ? const Icon(Icons.check,
-                                              color: Colors.white, size: 18)
+                                              color: AppConstant.appMainColor,
+                                              size: 18)
                                           : null,
                                     ),
                                   );
@@ -245,8 +241,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     vertical: 10, horizontal: 15),
                                 decoration: BoxDecoration(
                                   color: selectedSize == size
-                                      ? Colors.black
-                                      : Colors.white,
+                                      ? AppConstant.appSecondaryColor
+                                      : AppConstant.appMainColor,
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: Colors.grey),
                                 ),
@@ -255,8 +251,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: selectedSize == size
-                                        ? Colors.white
-                                        : Colors.black,
+                                        ? AppConstant.appMainColor
+                                        : AppConstant.appSecondaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -295,7 +291,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
               padding: const EdgeInsets.only(
                   top: 10, left: 15, right: 15, bottom: 5),
-              color: Colors.white,
+              color: AppConstant.appMainColor,
               child: Column(
                 children: [
                   Row(
@@ -349,7 +345,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         },
                         child: const Text(
                           'Add To Cart',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: AppConstant.appMainColor),
                         ),
                       ),
                     ],
@@ -365,7 +361,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Future<void> checkProductExistence({
     required String uId,
-    int quantityIncrement =1,
+    int quantityIncrement = 1,
   }) async {
     final DocumentReference documentReference = FirebaseFirestore.instance
         .collection('cart')
@@ -378,8 +374,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (snapshot.exists) {
       int currentQuantity = snapshot['productQuantity'];
       int updatedQuantity = currentQuantity + quantityIncrement;
-      double totalPrice = double.parse(widget.productModel.fullPrice) *
-          updatedQuantity;
+      double totalPrice =
+          double.parse(widget.productModel.fullPrice) * updatedQuantity;
       await documentReference.update({
         'productQuantity': updatedQuantity,
         'productTotalPrice': totalPrice
@@ -390,7 +386,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         'uId': uId,
         'createdAt': DateTime.now(),
       });
-      CartModel cartModel = CartModel(productId: widget.productModel.productId,
+      CartModel cartModel = CartModel(
+          productId: widget.productModel.productId,
           catId: widget.productModel.catId,
           productName: widget.productModel.productName,
           catName: widget.productModel.catName,
@@ -407,10 +404,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
       await documentReference.set(cartModel.toMap());
       print('Product Done');
-
-
-
     }
   }
 }
-
