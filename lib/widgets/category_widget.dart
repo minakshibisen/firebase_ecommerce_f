@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ecommerce_f/models/category_model.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_imagecards/flutter_imagecards.dart';
 import 'package:get/get.dart';
 

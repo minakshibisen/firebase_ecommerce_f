@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/controllers/product_price_controller.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/checkout_screen.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/main_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,33 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
         backgroundColor: AppConstant.appSecondaryColor,
         appBar: AppBar(
-          title: Text('Cart Product '),
+          automaticallyImplyLeading: false,
+          leading: GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Container(
+                margin: const EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Icon(
+                  Icons.arrow_back_sharp,
+                  size: 25,
+                  color: AppConstant.appMainColor2,
+                ),
+              ),
+            ),
+          ),
+          toolbarHeight: 80,
           backgroundColor: AppConstant.appMainColor,
+          title: Text(
+            'Cart Product',
+            textAlign: TextAlign.center,
+            style:
+                TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
+          ),
+          centerTitle: true,
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -112,7 +138,8 @@ class _CartScreenState extends State<CartScreen> {
                                 productPriceController.fetchProductPrice();
                                 return SwipeActionCell(
                                   key: ObjectKey(cartModel.productId),
-                                  backgroundColor: AppConstant.appSecondaryColor,
+                                  backgroundColor:
+                                      AppConstant.appSecondaryColor,
                                   trailingActions: [
                                     SwipeAction(
                                       onTap: (CompletionHandler handler) async {
@@ -137,38 +164,43 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                           ),
                           SizedBox(
-                            height:100,
+                            height: 100,
                             width: double.infinity,
                             child: Container(
                               color: AppConstant.appMainColor,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 25),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 25),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const Text(
                                           "Total Price",
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
-                                            color: AppConstant.appSecondaryColor,
+                                            color:
+                                                AppConstant.appSecondaryColor,
                                           ),
                                         ),
                                         Text(
                                           'रु ${productPriceController.totalPrice.value.toString()}',
                                           style: const TextStyle(
                                             fontSize: 14,
-                                            color: AppConstant.appSecondaryColor,
+                                            color:
+                                                AppConstant.appSecondaryColor,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap:()=>Get.to(CheckoutScreen()),
+                                    onTap: () => Get.to(CheckoutScreen()),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
@@ -176,8 +208,10 @@ class _CartScreenState extends State<CartScreen> {
                                           Container(
                                             padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
-                                              color: AppConstant.appSecondaryColor,
-                                              borderRadius: BorderRadius.circular(15),
+                                              color:
+                                                  AppConstant.appSecondaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                             ),
                                             child: Row(
                                               children: [
@@ -185,12 +219,17 @@ class _CartScreenState extends State<CartScreen> {
                                                   "Checkout",
                                                   style: TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: AppConstant.appMainColor),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppConstant
+                                                          .appMainColor),
                                                 ),
-                                                SizedBox(width: 6,),
+                                                SizedBox(
+                                                  width: 6,
+                                                ),
                                                 Icon(Icons.arrow_forward,
-                                                    color: AppConstant.appMainColor),
+                                                    color: AppConstant
+                                                        .appMainColor),
                                               ],
                                             ),
                                           ),
@@ -215,9 +254,9 @@ class _CartScreenState extends State<CartScreen> {
   Widget cartItemCard({required CartModel cartModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: AppConstant.appMainColor,
+      color: AppConstant.gray,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
             Row(
@@ -242,14 +281,19 @@ class _CartScreenState extends State<CartScreen> {
                       Text(
                         cartModel.productName,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstant.appMainColor2),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         cartModel.productDescription,
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.grey),
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: AppConstant.decColor,
+                            fontWeight: FontWeight.normal),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -270,7 +314,9 @@ class _CartScreenState extends State<CartScreen> {
                       Text(
                         (cartModel.salePrice),
                         style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.normal),
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                            color: AppConstant.appMainColor2),
                       ),
                       SizedBox(
                         width: 5,
@@ -280,7 +326,7 @@ class _CartScreenState extends State<CartScreen> {
                         style: const TextStyle(
                             decoration: TextDecoration.lineThrough,
                             fontSize: 14,
-                            color: Colors.red,
+                            color: Colors.black,
                             fontWeight: FontWeight.normal),
                       ),
                     ],
@@ -291,7 +337,9 @@ class _CartScreenState extends State<CartScreen> {
                       Text(
                         'Total Price: ',
                         style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstant.appMainColor2),
                       ),
                       Text(
                         (cartModel.productTotalPrice).toString(),
@@ -303,23 +351,27 @@ class _CartScreenState extends State<CartScreen> {
                 ]),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: AppConstant.appMainColor2,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.remove, size: 18),
+                        icon: const Icon(Icons.remove,
+                            size: 18, color: AppConstant.appSecondaryColor),
                         onPressed: () => updateQuantity(
                             cartModel.productQuantity - 1, cartModel),
                       ),
                       Text(
                         cartModel.productQuantity.toString(),
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstant.appSecondaryColor),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.add, size: 18),
+                        icon: const Icon(Icons.add,
+                            size: 18, color: AppConstant.appSecondaryColor),
                         onPressed: () => updateQuantity(
                             cartModel.productQuantity + 1, cartModel),
                       ),

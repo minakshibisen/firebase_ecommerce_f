@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_category_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_flash_sale_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_products_screen.dart';
@@ -60,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
 
       drawer: Drawer(
-        backgroundColor: Colors.white,
+        backgroundColor: AppConstant.gray,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -110,28 +111,28 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(height: Get.height / 90.0),
             HeadingWidget(
               headingTitle: 'Categories',
-              headingSubTItle: 'According to your budget',
+              headingSubtitle: 'According to your budget',
               // ✅ Fixed missing subtitle
               onTap: () => Get.to(() => AllCategoryScreen()),
               buttonText: 'See More >',
             ),
-            const CategoryWidget(),
+            FadeInLeft(child: const CategoryWidget()),
             HeadingWidget(
               headingTitle: 'Flash Sale',
-              headingSubTItle: 'Grab the best deals',
+              headingSubtitle: 'Grab the best deals',
               onTap: () => Get.to(() => AllFlashSaleScreen()),
               // ✅ Fixed navigation
               buttonText: 'See More >',
             ),
-            const FlashSaleWidget(),
+            FadeInLeft(child: const FlashSaleWidget()),
             HeadingWidget(
               headingTitle: 'All Products',
-              headingSubTItle: 'According to your budget',
+              headingSubtitle: 'According to your budget',
               onTap: () => Get.to(() => AllProductsScreen()),
               // ✅ Fixed navigation
               buttonText: 'See More >',
             ),
-            AllProductWidget()
+            FadeInDownBig(child: AllProductWidget())
           ],
         ),
       ),
@@ -146,7 +147,7 @@ class _MainScreenState extends State<MainScreen> {
     return ListTile(
       leading: Icon(icon, color: AppConstant.appMainColor),
       title:
-          Text(title, style: const TextStyle(color: AppConstant.appMainColor)),
+          Text(title, style: const TextStyle(color: AppConstant.appMainColor2)),
       onTap: onTap,
     );
   }

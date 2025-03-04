@@ -11,4 +11,5 @@ class AppConstant{
   static const radColor=Color(0xFFBD0101);
   static const gray=Color(0xFFFCE4EC);
   static const borderColor=Color(0xFFF8BBD0);
+  static const decColor=Color(0xB2FA659C);
 }

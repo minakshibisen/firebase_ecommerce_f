@@ -19,16 +19,38 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   final ProductPriceController productPriceController =
-  Get.put(ProductPriceController());
+      Get.put(ProductPriceController());
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: AppConstant.appSecondaryColor,
         appBar: AppBar(
-          title: Text('Order Screen'),
+          automaticallyImplyLeading: false,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Container(
+              margin: const EdgeInsets.all(3.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Icon(
+                Icons.arrow_back_sharp,
+                size: 25,
+                color: AppConstant.appMainColor2,
+              ),
+            ),
+          ),
+          toolbarHeight: 80,
           backgroundColor: AppConstant.appMainColor,
+          title: Text(
+            'Order Screen',
+            textAlign: TextAlign.center,
+            style:
+                TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
+          ),
+          centerTitle: true,
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -74,52 +96,50 @@ class _OrderScreenState extends State<OrderScreen> {
                               itemBuilder: (context, index) {
                                 final data = snapshot.data!.docs[index];
                                 OrderModel orderModel = OrderModel(
-                                    productId: data['productId'].toString(),
-                                    catId: data['catId'].toString(),
-                                    productName: data['productName'].toString(),
-                                    catName: data['catName'].toString(),
-                                    salePrice: data['salePrice'].toString(),
-                                    fullPrice: data['fullPrice'].toString(),
-                                    productImg: data['productImg'],
-                                    deliveryTime: data['deliveryTime'].toString(),
-                                    isSale: data['isSale'],
-                                    productDescription: data['productDescription'].toString(),
-                                    createdAt: DateTime.now(),
-                                    updatedAt: data['updatedAt'],
-                                    productQuantity: data['productQuantity'],
-                                    productTotalPrice:
-                                    (double.tryParse(data['productTotalPrice'].toString()) ?? 0.0),
-                                    customerId: data['customerId'],
-                                    status: data['status'],
-                                    customerPhone: data['customerPhone'],
-                                    customerName: data['customerName'],
-                                    customerAddress:data['customerAddress'],
-                                    customerDeviceId: data['customerDeviceId'],);
+                                  productId: data['productId'].toString(),
+                                  catId: data['catId'].toString(),
+                                  productName: data['productName'].toString(),
+                                  catName: data['catName'].toString(),
+                                  salePrice: data['salePrice'].toString(),
+                                  fullPrice: data['fullPrice'].toString(),
+                                  productImg: data['productImg'],
+                                  deliveryTime: data['deliveryTime'].toString(),
+                                  isSale: data['isSale'],
+                                  productDescription:
+                                      data['productDescription'].toString(),
+                                  createdAt: DateTime.now(),
+                                  updatedAt: data['updatedAt'],
+                                  productQuantity: data['productQuantity'],
+                                  productTotalPrice: (double.tryParse(
+                                          data['productTotalPrice']
+                                              .toString()) ??
+                                      0.0),
+                                  customerId: data['customerId'],
+                                  status: data['status'],
+                                  customerPhone: data['customerPhone'],
+                                  customerName: data['customerName'],
+                                  customerAddress: data['customerAddress'],
+                                  customerDeviceId: data['customerDeviceId'],
+                                );
                                 productPriceController.fetchProductPrice();
-                                return
-                                  cartItemCard(orderModel: orderModel);
-
+                                return cartItemCard(orderModel: orderModel);
                               },
                             ),
                           ),
-
                         ],
                       ),
                     ),
                   ),
-
-
                 );
               }
               return Container();
-
             }));
   }
 
   Widget cartItemCard({required OrderModel orderModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: AppConstant.appMainColor,
+      color: AppConstant.gray,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -137,8 +157,6 @@ class _OrderScreenState extends State<OrderScreen> {
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 const SizedBox(width: 15),
-
-                // Product Details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,14 +164,17 @@ class _OrderScreenState extends State<OrderScreen> {
                       Text(
                         orderModel.productName,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstant.appMainColor2),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         orderModel.productDescription,
-                        style:
-                        const TextStyle(fontSize: 14, color: Colors.grey),
+                        style: const TextStyle(
+                            fontSize: 14, color: AppConstant.decColor),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -174,7 +195,9 @@ class _OrderScreenState extends State<OrderScreen> {
                       Text(
                         (orderModel.salePrice),
                         style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.normal),
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                            color: AppConstant.appMainColor2),
                       ),
                       SizedBox(
                         width: 5,
@@ -184,15 +207,13 @@ class _OrderScreenState extends State<OrderScreen> {
                         style: const TextStyle(
                             decoration: TextDecoration.lineThrough,
                             fontSize: 14,
-                            color: Colors.red,
+                            color: Colors.black,
                             fontWeight: FontWeight.normal),
                       ),
                     ],
                   ),
                   const SizedBox(height: 5),
-
                 ]),
-
               ],
             ),
           ],
@@ -200,5 +221,4 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
     );
   }
-
 }

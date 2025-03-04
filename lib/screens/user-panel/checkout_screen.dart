@@ -35,8 +35,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Scaffold(
         backgroundColor: AppConstant.appSecondaryColor,
         appBar: AppBar(
-          title: Text('Checkout Screen'),
+          automaticallyImplyLeading: false,
+          leading: Builder(
+            builder: (context) => GestureDetector(
+              onTap: () {
+                Scaffold.of(context).openDrawer();
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Container(
+                  margin: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_sharp,
+                    size: 25,
+                    color: AppConstant.appMainColor2,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          toolbarHeight: 80,
+
           backgroundColor: AppConstant.appMainColor,
+          title: Text(
+            'Checkout Screen',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
+          ),
+          centerTitle: true,
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -236,7 +266,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget cartItemCard({required CartModel cartModel}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: AppConstant.appMainColor,
+      color: AppConstant.gray,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -263,14 +293,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Text(
                         cartModel.productName,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16, fontWeight: FontWeight.bold  ,color: AppConstant.appMainColor2,),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                      ),
+                      ),  const SizedBox(height: 4),
                       Text(
                         cartModel.productDescription,
                         style:
-                            const TextStyle(fontSize: 14, color: Colors.grey),
+                            const TextStyle(fontSize: 14,   color: AppConstant.decColor,),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -291,7 +321,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Text(
                         (cartModel.salePrice),
                         style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.normal),
+                            fontSize: 14, fontWeight: FontWeight.normal ,color: AppConstant.appMainColor2 ),
                       ),
                       SizedBox(
                         width: 5,
@@ -301,7 +331,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         style: const TextStyle(
                             decoration: TextDecoration.lineThrough,
                             fontSize: 14,
-                            color: Colors.red,
+                            color: Colors.black,
                             fontWeight: FontWeight.normal),
                       ),
                     ],
@@ -317,35 +347,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Text(
                       (cartModel.productTotalPrice).toString(),
                       style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold),
+                          fontSize: 14, fontWeight: FontWeight.bold,color: AppConstant.appMainColor2),
                     ),
                   ],
                 )
-                // Container(
-                //   decoration: BoxDecoration(
-                //     color: Colors.grey[200],
-                //     borderRadius: BorderRadius.circular(20),
-                //   ),
-                //   child: Row(
-                //     children: [
-                //       IconButton(
-                //         icon: const Icon(Icons.remove, size: 18),
-                //         onPressed: () => updateQuantity(
-                //             cartModel.productQuantity - 1, cartModel),
-                //       ),
-                //       Text(
-                //         cartModel.productQuantity.toString(),
-                //         style: TextStyle(
-                //             fontSize: 16, fontWeight: FontWeight.bold),
-                //       ),
-                //       IconButton(
-                //         icon: const Icon(Icons.add, size: 18),
-                //         onPressed: () => updateQuantity(
-                //             cartModel.productQuantity + 1, cartModel),
-                //       ),
-                //     ],
-                //   ),
-                // ),
+
               ],
             ),
           ],
@@ -371,115 +377,118 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void showCustomBottomSheet() {
-    Get.bottomSheet(Container(
-      height: Get.height * 0.4,
-      decoration: BoxDecoration(
-          color: AppConstant.appMainColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(50.0))),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: SizedBox(
-                height: 40.0,
-                child: TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                      labelText: 'Name',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20.00),
-                      hintStyle: TextStyle(fontSize: 12)),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: SizedBox(
-                height: 55.0,
-                child: TextFormField(
-                  controller: phoneController,
-                  decoration: InputDecoration(
-                      labelText: 'Mobile',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.00),
-                      hintStyle: TextStyle(fontSize: 12)),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: SizedBox(
-                height: 55.0,
-                child: TextFormField(
-                  controller: addressController,
-                  decoration: InputDecoration(
-                      labelText: 'Address',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.00),
-                      hintStyle: TextStyle(fontSize: 12)),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () async {
-                if (nameController.text != '' &&
-                    phoneController.text != '' &&
-                    addressController.text != '') {
-                  String name = nameController.text.trim();
-                  String phone = phoneController.text.trim();
-                  String address = addressController.text.trim();
-
-
-                  String customerToken = await getCoustomerDeviceTokenController();
-                  placeOrder(
-                    context: context,
-                    customerName:name,
-                    customerAddress:address,
-                    customerPhone:phone,
-                    customerDeviceToken:customerToken,
-                  );
-                  Get.to(() => OrderScreen());
-                } else {
-                  if (kDebugMode) {
-                    print('please fill all detail');
-                  }
-                }
-
-
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppConstant.appSecondaryColor,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Text(
-                            "Confirm Order",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppConstant.appMainColor),
-                          ),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Icon(Icons.arrow_forward, color: AppConstant.appMainColor),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.45,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppConstant.appSecondaryColor, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              spreadRadius: 2,
             ),
           ],
         ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              Text(
+                "Enter Details",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              _buildCustomTextField(nameController, 'Name', Icons.person),
+              _buildCustomTextField(phoneController, 'Mobile', Icons.phone),
+              _buildCustomTextField(addressController, 'Address', Icons.location_on),
+              SizedBox(height: 15),
+              GestureDetector(
+                onTap: () async {
+                  if (nameController.text.isNotEmpty &&
+                      phoneController.text.isNotEmpty &&
+                      addressController.text.isNotEmpty) {
+                    String name = nameController.text.trim();
+                    String phone = phoneController.text.trim();
+                    String address = addressController.text.trim();
+
+                    String customerToken = await getCoustomerDeviceTokenController();
+                    placeOrder(
+                      context: context,
+                      customerName: name,
+                      customerAddress: address,
+                      customerPhone: phone,
+                      customerDeviceToken: customerToken,
+                    );
+                    Get.to(() => OrderScreen());
+                  } else {
+                    if (kDebugMode) {
+                      print('Please fill all details');
+                    }
+                  }
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppConstant.appSecondaryColor,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 6,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Confirm Order",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppConstant.appMainColor,
+                        ),
+                      ),
+                      SizedBox(width: 6),
+                      Icon(Icons.arrow_forward, color: AppConstant.appMainColor),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-    ));
+    );
   }
+
+  Widget _buildCustomTextField(TextEditingController controller, String label, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: AppConstant.appMainColor),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 15),
+        ),
+      ),
+    );
+  }
+
 }

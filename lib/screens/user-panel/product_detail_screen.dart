@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
 import 'package:firebase_ecommerce_f/models/product_model.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,77 +53,73 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppConstant.appSecondaryColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Container(
-            margin: const EdgeInsets.all(3.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
-            child: Icon(
-              Icons.arrow_back_sharp,
-              size: 25,
-              color: AppConstant.appMainColor2,
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-                backgroundColor: AppConstant.appSecondaryColor,
-                child: IconButton(
-                    icon: const Icon(Icons.shopping_bag_outlined,
-                        color: AppConstant.appMainColor2),
-                    onPressed: () async {
-                      Get.to(() => CartScreen());
-                    })),
-          )
-        ],
-        toolbarHeight: 80,
-        backgroundColor: AppConstant.appMainColor,
-        title: Text(
-          AppConstant.appMainName,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
-        ),
-        centerTitle: true,
-      ),
       body: Stack(
         children: [
           Column(
             children: [
               Expanded(
-                flex: 10,
-                child: CarouselSlider(
-                  items: images.map((imageUrl) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl.trim(),
-                        fit: BoxFit.cover,
-                        width: Get.width,
-                        height: Get.height * 0.5,
-                        placeholder: (context, url) => const Center(
-                            child: CupertinoActivityIndicator()),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                flex: 13,
+                child: Stack(
+                  children:[
+                    SizedBox(
+                      height: Get.height * 0.6, // Adjusted height
+                      child: CarouselSlider(
+                        items: images.map((imageUrl) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(0.0),
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrl.trim(),
+                              fit: BoxFit.cover,
+                              width: Get.width,
+                              height: Get.height * 0.4,
+                              placeholder: (context, url) => const Center(
+                                  child: CupertinoActivityIndicator()),
+                              errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                            ),
+                          );
+                        }).toList(),
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          aspectRatio: 1.5,
+                          viewportFraction: 1,
+                          scrollDirection: Axis.horizontal,
+                        ),
                       ),
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    aspectRatio: 1.5,
-                    viewportFraction: 1,
-                    scrollDirection: Axis.horizontal,
-                  ),
+                    ),
+                    Positioned(
+                      top: 40,
+                      left: 20,
+                      child: CircleAvatar(
+                        backgroundColor: AppConstant.appMainColor,
+                        child: IconButton(
+                          icon:
+                          const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () {
+                            Get.to(()=>MainScreen());
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 40,
+                      right: 20,
+                      child: CircleAvatar(
+                        backgroundColor: AppConstant.appMainColor,
+                        child: IconButton(
+                          icon:
+                          const Icon(Icons.shopping_bag_outlined, color: Colors.white),
+                          onPressed: () {
+                          Get.to(()=>CartScreen());
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
-                flex: 18,
+                flex: 25,
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: const BoxDecoration(
@@ -288,7 +285,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             left: 0,
             right: 0,
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               padding: const EdgeInsets.only(
                   top: 10, left: 15, right: 15, bottom: 5),
               color: AppConstant.appMainColor,
