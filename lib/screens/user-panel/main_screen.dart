@@ -60,45 +60,76 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
       ),
 
-      drawer: Drawer(
+      drawer:Drawer(
         backgroundColor: AppConstant.gray,
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            SizedBox(
-              height: 250,
-              child: DrawerHeader(
-                decoration:
-                    const BoxDecoration(color: AppConstant.appSecondaryColor),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(50),
-                      decoration: BoxDecoration(
-                        color: AppConstant.appMainColor,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Icon(Icons.tune_rounded,
-                          color: AppConstant.appSecondaryColor),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Minkashi Bisen',
-                      style: TextStyle(
-                          fontSize: 20, color: AppConstant.appMainColor),
-                    ),
-                  ],
+            Container(
+              height: 280,
+              decoration: BoxDecoration(
+                color: AppConstant.appMainColor,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Image.asset(
+                        width: double.infinity,
+                        height: 200,
+                        'assets/images/img.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    'minkashi@example.com',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                ],
               ),
             ),
-            _drawerItem(Icons.person, 'My Profile', () {}),
-            _drawerItem(Icons.book, 'My Order', () {
-              Get.to(() => OrderScreen());
-            }),
-            _drawerItem(Icons.workspace_premium, 'Offers', () {}),
-            _drawerItem(Icons.video_label, 'My Favorite', () {}),
-            _drawerItem(Icons.edit, 'Edit Profile', () {}),
-            _drawerItem(Icons.logout, 'LogOut', () {}),
+
+            const SizedBox(height: 15),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _drawerItem(Icons.person, 'My Profile', () {}),
+                  _drawerItem(Icons.shopping_bag_outlined, 'My Order', () {
+                    Get.to(() => OrderScreen());
+                  }),
+                  _drawerItem(Icons.workspace_premium, 'Offers', () {}),
+                  _drawerItem(Icons.favorite, 'My Favorite', () {}),
+                  _drawerItem(Icons.edit, 'Edit Profile', () {}),
+                  _drawerItem(Icons.logout, 'Log Out', () {}),
+                ],
+              ),
+            ),
           ],
         ),
       ),

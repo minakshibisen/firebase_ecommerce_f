@@ -50,7 +50,6 @@ class CategoryWidget extends StatelessWidget {
                       updatedAt: snapshot.data?.docs[index]['updatedAt'],
                     );
                     return Row(
-
                       children: [
                         GestureDetector(
                           onTap: ()=>Get.to(SingleCategoryProductScreen(catId:categoryModel.catId)),

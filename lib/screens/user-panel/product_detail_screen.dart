@@ -61,29 +61,41 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 flex: 13,
                 child: Stack(
                   children:[
-                    SizedBox(
-                      height: Get.height * 0.6, // Adjusted height
-                      child: CarouselSlider(
-                        items: images.map((imageUrl) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(0.0),
-                            child: CachedNetworkImage(
-                              imageUrl: imageUrl.trim(),
-                              fit: BoxFit.cover,
-                              width: Get.width,
-                              height: Get.height * 0.4,
-                              placeholder: (context, url) => const Center(
-                                  child: CupertinoActivityIndicator()),
-                              errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                            ),
-                          );
-                        }).toList(),
-                        options: CarouselOptions(
-                          autoPlay: true,
-                          aspectRatio: 1.5,
-                          viewportFraction: 1,
-                          scrollDirection: Axis.horizontal,
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: SizedBox(
+                        height: Get.height * 0.6, // Adjusted height
+                        child: CarouselSlider(
+                          items: images.map((imageUrl) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(0.0),
+                              child: CachedNetworkImage(
+                                imageUrl: imageUrl.trim(),
+                                fit: BoxFit.cover,
+                              width: double.infinity,
+                                height: Get.height * 0.4,
+                                placeholder: (context, url) => const Center(
+                                    child: CupertinoActivityIndicator()),
+                                errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                              ),
+                            );
+                          }).toList(),
+                          options: CarouselOptions(
+                            autoPlay: true,
+                            aspectRatio: 1.5,
+                            viewportFraction: 1,
+                            scrollDirection: Axis.horizontal,
+                          ),
                         ),
                       ),
                     ),

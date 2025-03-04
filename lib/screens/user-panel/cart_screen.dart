@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/controllers/product_price_controller.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/checkout_screen.dart';
-import 'package:firebase_ecommerce_f/screens/user-panel/main_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
@@ -27,8 +27,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-
     return Scaffold(
         backgroundColor: AppConstant.appSecondaryColor,
         appBar: AppBar(
@@ -134,7 +132,6 @@ class _CartScreenState extends State<CartScreen> {
                                             cartData['productTotalPrice']
                                                 .toString()) ??
                                         0.0));
-
                                 productPriceController.fetchProductPrice();
                                 return SwipeActionCell(
                                   key: ObjectKey(cartModel.productId),
@@ -143,8 +140,9 @@ class _CartScreenState extends State<CartScreen> {
                                   trailingActions: [
                                     SwipeAction(
                                       onTap: (CompletionHandler handler) async {
-                                        print('deleted');
-
+                                        if (kDebugMode) {
+                                          print('deleted');
+                                        }
                                         await FirebaseFirestore.instance
                                             .collection('cart')
                                             .doc(user?.uid)
