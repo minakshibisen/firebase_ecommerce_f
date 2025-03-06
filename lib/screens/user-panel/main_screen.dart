@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_category_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_flash_sale_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/all_products_screen.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/location_screen.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/order_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:firebase_ecommerce_f/widgets/all_product_widget.dart';
@@ -27,38 +28,72 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: AppConstant.appSecondaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: AppConstant.appMainColor,
+        toolbarHeight: 80,
+        centerTitle: true,
+
+        // Leading Icon (Menu)
         leading: Builder(
           builder: (context) => GestureDetector(
             onTap: () {
               Scaffold.of(context).openDrawer();
             },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Container(
-                margin: const EdgeInsets.all(3.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                child: Icon(
-                  Icons.menu_open,
-                  size: 25,
-                  color: AppConstant.appMainColor2,
-                ),
+            child: Container(
+              margin: const EdgeInsets.all(8.0), // Consistent margin
+              width: 40, // Ensure same size
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Icon(
+                Icons.menu_open,
+                size: 25,
+                color: AppConstant.appMainColor2,
               ),
             ),
           ),
         ),
-        toolbarHeight: 80,
 
-        backgroundColor: AppConstant.appMainColor,
+        // Title
         title: Text(
           AppConstant.appMainName,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppConstant.appSecondaryColor, fontSize: 25),
+          style: TextStyle(
+            color: AppConstant.appSecondaryColor,
+            fontSize: 25,
+          ),
         ),
-        centerTitle: true,
+
+        // Action Icon (Shopping Bag)
+        actions: [
+          Builder(
+            builder: (context) =>GestureDetector(
+              onTap:(){
+                Get.to(()=>AllCategoryScreen());
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10.0), // Align with leading
+                child: Container(
+                  margin: const EdgeInsets.all(8.0), // Same margin as leading
+                  width: 40, // Same width & height
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: Icon(
+                    Icons.shopping_bag_outlined,
+                    size: 25,
+                    color: AppConstant.appMainColor2,
+                  ),
+                ),
+              )
+
+          ),    )
+        ],
       ),
+
 
       drawer:Drawer(
         backgroundColor: AppConstant.gray,
@@ -120,6 +155,9 @@ class _MainScreenState extends State<MainScreen> {
                 padding: EdgeInsets.zero,
                 children: [
                   _drawerItem(Icons.person, 'My Profile', () {}),
+                  _drawerItem(Icons.person, 'Location', () {
+                    Get.to(() => LocationPickerScreen());
+                  }),
                   _drawerItem(Icons.shopping_bag_outlined, 'My Order', () {
                     Get.to(() => OrderScreen());
                   }),

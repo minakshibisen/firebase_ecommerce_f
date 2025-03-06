@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 
 import '../../services/place_order_service.dart';
 import '../../utils/common_util.dart';
+import 'location_screen.dart';
 import 'order_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -27,6 +28,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  Future<void> _pickLocation() async {
+    final selectedLocation = await Get.to(() => LocationPickerScreen());
+
+    if (selectedLocation != null) {
+      setState(() {
+        addressController.text = selectedLocation;
+      });
+    }
+  }
   final ProductPriceController productPriceController =
       Get.put(ProductPriceController());
 
@@ -377,6 +387,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void showCustomBottomSheet() {
+
     Get.bottomSheet(
       Container(
         height: Get.height * 0.45,
@@ -405,9 +416,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              _buildCustomTextField(nameController, 'Name', Icons.person),
-              _buildCustomTextField(phoneController, 'Mobile', Icons.phone),
-              _buildCustomTextField(addressController, 'Address', Icons.location_on),
+              _buildCustomTextField(nameController, 'Name', Icons.person,'name'),
+              _buildCustomTextField(phoneController, 'Mobile', Icons.phone,'mobile'),
+              GestureDetector(
+                onTap: _pickLocation,
+                child: AbsorbPointer(
+                  child: _buildCustomTextField(addressController, 'Address', Icons.location_on, 'Select Address'),
+                ),
+              ),
               SizedBox(height: 15),
               GestureDetector(
                 onTap: () async {
@@ -471,10 +487,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildCustomTextField(TextEditingController controller, String label, IconData icon) {
+  Widget _buildCustomTextField(TextEditingController controller, String label, IconData icon,String hint) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
+
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
