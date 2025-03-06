@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ecommerce_f/models/category_model.dart';
@@ -35,45 +36,47 @@ class CategoryWidget extends StatelessWidget {
             );
           }
           if (snapshot.data != null) {
-            return SizedBox(
-              height: Get.height / 5,
-              child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    CategoryModel categoryModel = CategoryModel(
-                      catId: snapshot.data?.docs[index]['catId'],
-                      catName: snapshot.data?.docs[index]['catName'],
-                      category: snapshot.data?.docs[index]['category'],
-                      createdAt: snapshot.data?.docs[index]['createdAt'],
-                      updatedAt: snapshot.data?.docs[index]['updatedAt'],
-                    );
-                    return Row(
-                      children: [
-                        GestureDetector(
-                          onTap: ()=>Get.to(SingleCategoryProductScreen(catId:categoryModel.catId)),
-                          child: Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: FillImageCards(
-                              color: AppConstant.gray,
-                              width: Get.width / 4.0,
-                              heightImage: Get.height / 12,
-                              borderRadius: 20.0,
-                              imageProvider: CachedNetworkImageProvider(
-                                categoryModel.category,
+            return RubberBand(
+              child: SizedBox(
+                height: Get.height / 5,
+                child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      CategoryModel categoryModel = CategoryModel(
+                        catId: snapshot.data?.docs[index]['catId'],
+                        catName: snapshot.data?.docs[index]['catName'],
+                        category: snapshot.data?.docs[index]['category'],
+                        createdAt: snapshot.data?.docs[index]['createdAt'],
+                        updatedAt: snapshot.data?.docs[index]['updatedAt'],
+                      );
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: ()=>Get.to(SingleCategoryProductScreen(catId:categoryModel.catId)),
+                            child: Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: FillImageCards(
+                                color: AppConstant.gray,
+                                width: Get.width / 4.0,
+                                heightImage: Get.height / 12,
+                                borderRadius: 20.0,
+                                imageProvider: CachedNetworkImageProvider(
+                                  categoryModel.category,
+                                ),
+                                title: Center(
+                                    child: Text(
+                                  categoryModel.catName,
+                                  style: TextStyle(fontSize: 12.0),
+                                )),
                               ),
-                              title: Center(
-                                  child: Text(
-                                categoryModel.catName,
-                                style: TextStyle(fontSize: 12.0),
-                              )),
                             ),
-                          ),
-                        )
-                      ],
-                    );
-                  }),
+                          )
+                        ],
+                      );
+                    }),
+              ),
             );
           }
           return Container();

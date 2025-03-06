@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ecommerce_f/models/product_model.dart';
@@ -36,65 +37,67 @@ class FlashSaleWidget extends StatelessWidget {
           if (snapshot.data != null) {
             return SizedBox(
               height: Get.height / 4.5,
-              child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    final productData = snapshot.data!.docs[index];
-                    String imageUrl;
-                    if (productData['productImg'] is List && productData['productImg'].isNotEmpty) {
-                      imageUrl = productData['productImg'][0]; // Get first image from list
-                    } else {
-                      imageUrl = productData['productImg'].toString(); // Convert to string
-                    }
-                    ProductModel productModel = ProductModel(
-                        productId:productData['productId'] .toString(),
-                        catId: productData['catId'].toString(),
-                        productName:productData ['productName'].toString(),
-                        catName:productData ['catName'].toString(),
-                        salePrice: productData ['salePrice'].toString(),
-                        fullPrice: productData ['fullPrice'].toString(),
-                        productImg:imageUrl,
-                        deliveryTime: productData['deliveryTime'].toString(),
-                        isSale: productData['isSale'],
-                        productDescription:productData ['productDescription'].toString(),
-                        createdAt: productData['createdAt'],
-                        updatedAt:productData ['updatedAt']);
-
-                    return Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => Get.to(() => ProductDetailScreen(productModel: productModel)),
-                          child: Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: FillImageCards(
-                              color: AppConstant.gray,
-                              width: Get.width / 3,
-                              heightImage: Get.height / 10,
-                              borderRadius: 20.0,
-                              imageProvider: CachedNetworkImageProvider(
-                                productModel.productImg.isNotEmpty ? productModel.productImg : 'https://images-cdn.ubuy.co.in/678980cc7e4e461a695c48ae-scarfs-for-women-winter-scarf-for.jpg',
-                              ),
-                              title: Text(
-                                productModel.productName,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 12.0,fontWeight: FontWeight.bold),
-                              ),
-                              description: SizedBox(height: 2.0,),
-                              footer: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Rs ${productModel.salePrice}',style: TextStyle(fontSize: 10),),
-                                  SizedBox(width: 2.0,),
-                                  Text(' ${productModel.fullPrice}',style: TextStyle(fontSize: 10,decoration: TextDecoration.lineThrough,color:AppConstant.radColor,fontWeight: FontWeight.bold),),
-                                ],
+              child: RubberBand(
+                child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final productData = snapshot.data!.docs[index];
+                      String imageUrl;
+                      if (productData['productImg'] is List && productData['productImg'].isNotEmpty) {
+                        imageUrl = productData['productImg'][0]; // Get first image from list
+                      } else {
+                        imageUrl = productData['productImg'].toString(); // Convert to string
+                      }
+                      ProductModel productModel = ProductModel(
+                          productId:productData['productId'] .toString(),
+                          catId: productData['catId'].toString(),
+                          productName:productData ['productName'].toString(),
+                          catName:productData ['catName'].toString(),
+                          salePrice: productData ['salePrice'].toString(),
+                          fullPrice: productData ['fullPrice'].toString(),
+                          productImg:imageUrl,
+                          deliveryTime: productData['deliveryTime'].toString(),
+                          isSale: productData['isSale'],
+                          productDescription:productData ['productDescription'].toString(),
+                          createdAt: productData['createdAt'],
+                          updatedAt:productData ['updatedAt']);
+                
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Get.to(() => ProductDetailScreen(productModel: productModel)),
+                            child: Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: FillImageCards(
+                                color: AppConstant.gray,
+                                width: Get.width / 3,
+                                heightImage: Get.height / 10,
+                                borderRadius: 20.0,
+                                imageProvider: CachedNetworkImageProvider(
+                                  productModel.productImg.isNotEmpty ? productModel.productImg : 'https://images-cdn.ubuy.co.in/678980cc7e4e461a695c48ae-scarfs-for-women-winter-scarf-for.jpg',
+                                ),
+                                title: Text(
+                                  productModel.productName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 12.0,fontWeight: FontWeight.bold),
+                                ),
+                                description: SizedBox(height: 2.0,),
+                                footer: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Rs ${productModel.salePrice}',style: TextStyle(fontSize: 10),),
+                                    SizedBox(width: 2.0,),
+                                    Text(' ${productModel.fullPrice}',style: TextStyle(fontSize: 10,decoration: TextDecoration.lineThrough,color:AppConstant.radColor,fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        )],
-                    );
-                  }),
+                          )],
+                      );
+                    }),
+              ),
             );
           }
           return Container();

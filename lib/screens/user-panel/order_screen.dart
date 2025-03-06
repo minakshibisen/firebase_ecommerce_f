@@ -148,15 +148,20 @@ class _OrderScreenState extends State<OrderScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Product Image
-                CachedNetworkImage(
-                  imageUrl: orderModel.productImg,
-                  height: 80,
-                  width: 100,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ColorFiltered(
+                  colorFilter: ColorFilter.mode(AppConstant.gray, BlendMode.multiply),
+                  child: CachedNetworkImage(
+                    imageUrl: orderModel.productImg,
+                    height: 80,
+                    width: 100,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 10),
+
+                // Product Details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +179,9 @@ class _OrderScreenState extends State<OrderScreen> {
                       Text(
                         orderModel.productDescription,
                         style: const TextStyle(
-                            fontSize: 14, color: AppConstant.decColor),
+                            fontSize: 14,
+                            color: AppConstant.appTextColor,
+                            fontWeight: FontWeight.normal),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -195,9 +202,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       Text(
                         (orderModel.salePrice),
                         style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: AppConstant.appMainColor2),
+                            fontSize: 14, fontWeight: FontWeight.normal ,color: AppConstant.appMainColor2 ),
                       ),
                       SizedBox(
                         width: 5,
@@ -212,7 +217,6 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
                 ]),
               ],
             ),

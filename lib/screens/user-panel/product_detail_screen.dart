@@ -7,6 +7,7 @@ import 'package:firebase_ecommerce_f/models/product_model.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../utils/app-constant.dart';
@@ -51,319 +52,355 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       images = widget.productModel.productImg.split(','); // Convert to list
     }
 
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: AppConstant.appMainColor2,
+        statusBarColor: AppConstant.appMainColor2,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
+
     return Scaffold(
       backgroundColor: AppConstant.appSecondaryColor,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                flex: 13,
-                child: Stack(
-                  children:[
-                    Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 8,
-                            spreadRadius: 2,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: SizedBox(
-                        height: Get.height * 0.6, // Adjusted height
-                        child: CarouselSlider(
-                          items: images.map((imageUrl) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(0.0),
-                              child: CachedNetworkImage(
-                                imageUrl: imageUrl.trim(),
-                                fit: BoxFit.cover,
-                              width: double.infinity,
-                                height: Get.height * 0.4,
-                                placeholder: (context, url) => const Center(
-                                    child: CupertinoActivityIndicator()),
-                                errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                              ),
-                            );
-                          }).toList(),
-                          options: CarouselOptions(
-                            autoPlay: true,
-                            aspectRatio: 1.5,
-                            viewportFraction: 1,
-                            scrollDirection: Axis.horizontal,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      left: 20,
-                      child: CircleAvatar(
-                        backgroundColor: AppConstant.appMainColor,
-                        child: IconButton(
-                          icon:
-                          const Icon(Icons.arrow_back, color: Colors.white),
-                          onPressed: () {
-                            Get.to(()=>MainScreen());
-                          },
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      right: 20,
-                      child: CircleAvatar(
-                        backgroundColor: AppConstant.appMainColor,
-                        child: IconButton(
-                          icon:
-                          const Icon(Icons.shopping_bag_outlined, color: Colors.white),
-                          onPressed: () {
-                          Get.to(()=>CartScreen());
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 25,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    color: AppConstant.appSecondaryColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(bottom: 80),
-                    // Prevent content from being covered
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Stack(
                       children: [
-                        Text(
-                          widget.productModel.productName,
-                          style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: AppConstant.appTextColor),
-                        ),
-                        const Text(
-                          "Vado Odelle Dress",
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-
-                        Row(
-                          children: [
-                            Row(
-                              children: List.generate(
-                                5,
-                                (index) => const Icon(Icons.star,
-                                    color: Colors.amber, size: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          height: Get.size.height * .45,
+                          child: SizedBox(
+                            height: double.infinity,
+                            child: CarouselSlider(
+                              items: images.map((imageUrl) {
+                                return CachedNetworkImage(
+                                  imageUrl: imageUrl.trim(),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  placeholder: (context, url) =>
+                                      const Center(
+                                          child:
+                                              CupertinoActivityIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                );
+                              }).toList(),
+                              options: CarouselOptions(
+                                autoPlay: true,
+                                aspectRatio: 1.1,
+                                viewportFraction: 1,
+                                scrollDirection: Axis.horizontal,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            const Text("(320 Review)",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey)),
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: Get.size.height * .4,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: AppConstant.appSecondaryColor,
+                                border: Border.all(color: AppConstant.gray),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.productModel.productName,
+                                    style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppConstant.appTextColor),
+                                  ),
+                                  const Text(
+                                    "Vado Odelle Dress",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.grey),
+                                  ),
+
+                                  Row(
+                                    children: [
+                                      Row(
+                                        children: List.generate(
+                                          5,
+                                          (index) => const Icon(Icons.star,
+                                              color: Colors.amber, size: 20),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Text("(320 Review)",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Available in stock",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppConstant.appTextColor),
+                                      ),
+                                      DropdownButton<String>(
+                                        value: selectedColor,
+                                        icon: const Icon(
+                                          Icons.arrow_drop_down,
+                                          color: AppConstant.appMainColor,
+                                        ),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            selectedColor = newValue!;
+                                          });
+                                        },
+                                        items: colors
+                                            .map<DropdownMenuItem<String>>(
+                                          (String color) {
+                                            return DropdownMenuItem<String>(
+                                              value: color,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                decoration: BoxDecoration(
+                                                  color: color == "Black"
+                                                      ? AppConstant
+                                                          .appSecondaryColor
+                                                      : color == "Green"
+                                                          ? Colors.green
+                                                          : color == "White"
+                                                              ? AppConstant
+                                                                  .appMainColor
+                                                              : Colors.orange,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10),
+                                                  border: Border.all(
+                                                      color: AppConstant
+                                                          .appSecondaryColor),
+                                                ),
+                                                width: 30,
+                                                height: 30,
+                                                child: color == selectedColor
+                                                    ? const Icon(Icons.check,
+                                                        color: AppConstant
+                                                            .appMainColor,
+                                                        size: 18)
+                                                    : null,
+                                              ),
+                                            );
+                                          },
+                                        ).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Text("Size",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppConstant.appTextColor)),
+                                  Row(
+                                    children: sizes.map((size) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedSize = size;
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 10),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 15),
+                                          decoration: BoxDecoration(
+                                            color: selectedSize == size
+                                                ? AppConstant
+                                                    .appSecondaryColor
+                                                : AppConstant.appMainColor,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Colors.grey),
+                                          ),
+                                          child: Text(
+                                            size,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: selectedSize == size
+                                                  ? AppConstant.appMainColor
+                                                  : AppConstant
+                                                      .appSecondaryColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    "Description",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppConstant.appTextColor),
+                                  ),
+                                  SizedBox(height: Get.height / 50),
+                                  Text(
+                                    widget.productModel.productDescription,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  // Additional product details...
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: Get.height * .2,)
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                alignment: Alignment.center,
+                width: Get.width,
+                decoration: BoxDecoration(
+                  color: AppConstant.appMainColor,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    child: Column(
+                      children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "Available in stock",
+                              "Total Price",
                               style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppConstant.appTextColor),
-                            ),
-                            DropdownButton<String>(
-                              value: selectedColor,
-                              icon: const Icon(
-                                Icons.arrow_drop_down,
-                                color: AppConstant.appMainColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: AppConstant.appSecondaryColor,
                               ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedColor = newValue!;
-                                });
-                              },
-                              items: colors.map<DropdownMenuItem<String>>(
-                                (String color) {
-                                  return DropdownMenuItem<String>(
-                                    value: color,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: color == "Black"
-                                            ? AppConstant.appSecondaryColor
-                                            : color == "Green"
-                                                ? Colors.green
-                                                : color == "White"
-                                                    ? AppConstant.appMainColor
-                                                    : Colors.orange,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                            color:
-                                                AppConstant.appSecondaryColor),
-                                      ),
-                                      width: 30,
-                                      height: 30,
-                                      child: color == selectedColor
-                                          ? const Icon(Icons.check,
-                                              color: AppConstant.appMainColor,
-                                              size: 18)
-                                          : null,
-                                    ),
-                                  );
-                                },
-                              ).toList(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    color: AppConstant.appSecondaryColor,
+                                    icon: const Icon(Icons.remove, size: 22),
+                                    onPressed: () => updateQuantity(-1),
+                                  ),
+                                  Text("$quantity",
+                                      style: const TextStyle(
+                                          color: AppConstant.appSecondaryColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  IconButton(
+                                    color: AppConstant.appSecondaryColor,
+                                    icon: const Icon(Icons.add, size: 22),
+                                    onPressed: () => updateQuantity(1),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        const Text("Size",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppConstant.appTextColor)),
                         Row(
-                          children: sizes.map((size) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedSize = size;
-                                });
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                  color: selectedSize == size
-                                      ? AppConstant.appSecondaryColor
-                                      : AppConstant.appMainColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.grey),
-                                ),
-                                child: Text(
-                                  size,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: selectedSize == size
-                                        ? AppConstant.appMainColor
-                                        : AppConstant.appSecondaryColor,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "\$${(double.tryParse(widget.productModel.fullPrice) ?? 0 * quantity).toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppConstant.appSecondaryColor,
                               ),
-                            );
-                          }).toList(),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppConstant.appSecondaryColor,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 30),
+                              ),
+                              onPressed: () async {
+                                checkProductExistence(uId: user!.uid);
+                              },
+                              child: const Text(
+                                'Add To Cart',
+                                style: TextStyle(color: AppConstant.appMainColor),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          "Description",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppConstant.appTextColor),
-                        ),
-                        SizedBox(height: Get.height / 50),
-                        Text(
-                          widget.productModel.productDescription,
-                          style:
-                              const TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 10),
-                        // Additional product details...
                       ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              padding: const EdgeInsets.only(
-                  top: 10, left: 15, right: 15, bottom: 5),
-              color: AppConstant.appMainColor,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Total Price",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppConstant.appSecondaryColor,
-                        ),
-                      ),
-                      Text(
-                        "\$${(double.tryParse(widget.productModel.fullPrice) ?? 0 * quantity).toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppConstant.appSecondaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove, size: 18),
-                            onPressed: () => updateQuantity(-1),
-                          ),
-                          Text("$quantity",
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                          IconButton(
-                            icon: const Icon(Icons.add, size: 18),
-                            onPressed: () => updateQuantity(1),
-                          ),
-                        ],
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppConstant.appSecondaryColor,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 30),
-                        ),
-                        onPressed: () async {
-                          checkProductExistence(uId: user!.uid);
-                        },
-                        child: const Text(
-                          'Add To Cart',
-                          style: TextStyle(color: AppConstant.appMainColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            ),
+            Positioned(
+              top: 70,
+              left: 20,
+              child: CircleAvatar(
+                backgroundColor: AppConstant.appMainColor,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.white),
+                  onPressed: () {
+                    Get.to(() => MainScreen());
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 70,
+              right: 20,
+              child: CircleAvatar(
+                backgroundColor: AppConstant.appMainColor,
+                child: IconButton(
+                  icon: const Icon(
+                      Icons.shopping_bag_outlined,
+                      color: Colors.white),
+                  onPressed: () {
+                    Get.to(() => CartScreen());
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

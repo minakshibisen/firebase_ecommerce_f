@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -108,158 +109,165 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 return SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 20),
+                        vertical: 0, horizontal: 0),
                     child: Container(
                       color: AppConstant.appSecondaryColor,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: ListView.builder(
-                              itemCount: snapshot.data!.docs.length,
-                              shrinkWrap: true,
-                              physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final cartData = snapshot.data!.docs[index];
-                                if (kDebugMode) {
-                                  print(cartData['productTotalPrice']);
-                                }
-                                String imageUrl;
-                                if (cartData['productImg'] is List &&
-                                    cartData['productImg'].isNotEmpty) {
-                                  imageUrl = cartData['productImg'][0];
-                                } else {
-                                  imageUrl = cartData['productImg'].toString();
-                                }
-                                CartModel cartModel = CartModel(
-                                    productId: cartData['productId'].toString(),
-                                    catId: cartData['catId'].toString(),
-                                    productName:
-                                        cartData['productName'].toString(),
-                                    catName: cartData['catName'].toString(),
-                                    salePrice: cartData['salePrice'].toString(),
-                                    fullPrice: cartData['fullPrice'].toString(),
-                                    productImg: imageUrl,
-                                    deliveryTime:
-                                        cartData['deliveryTime'].toString(),
-                                    isSale: cartData['isSale'],
-                                    productDescription:
-                                        cartData['productDescription']
-                                            .toString(),
-                                    createdAt: cartData['createdAt'],
-                                    updatedAt: cartData['updatedAt'],
-                                    productQuantity:
-                                        cartData['productQuantity'],
-                                    productTotalPrice: (double.tryParse(
-                                            cartData['productTotalPrice']
-                                                .toString()) ??
-                                        0.0));
-
-                                productPriceController.fetchProductPrice();
-                                return SwipeActionCell(
-                                  key: ObjectKey(cartModel.productId),
-                                  backgroundColor: AppConstant.appSecondaryColor,
-                                  trailingActions: [
-                                    SwipeAction(
-                                      onTap: (CompletionHandler handler) async {
-                                        if (kDebugMode) {
-                                          print('deleted');
-                                        }
-
-                                        await FirebaseFirestore.instance
-                                            .collection('cart')
-                                            .doc(user?.uid)
-                                            .collection('cartOrders')
-                                            .doc(cartModel.productId)
-                                            .delete();
-                                      },
-                                      title: 'DELETE',
-                                      forceAlignmentToBoundary: true,
-                                      performsFirstActionWithFullSwipe: true,
-                                      color: AppConstant.radColor,
-                                    )
-                                  ],
-                                  child: cartItemCard(cartModel: cartModel),
-                                );
-                              },
+                            child: RubberBand(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 15.0,horizontal: 20),
+                                child: ListView.builder(
+                                  itemCount: snapshot.data!.docs.length,
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final cartData = snapshot.data!.docs[index];
+                                    if (kDebugMode) {
+                                      print(cartData['productTotalPrice']);
+                                    }
+                                    String imageUrl;
+                                    if (cartData['productImg'] is List &&
+                                        cartData['productImg'].isNotEmpty) {
+                                      imageUrl = cartData['productImg'][0];
+                                    } else {
+                                      imageUrl = cartData['productImg'].toString();
+                                    }
+                                    CartModel cartModel = CartModel(
+                                        productId: cartData['productId'].toString(),
+                                        catId: cartData['catId'].toString(),
+                                        productName:
+                                            cartData['productName'].toString(),
+                                        catName: cartData['catName'].toString(),
+                                        salePrice: cartData['salePrice'].toString(),
+                                        fullPrice: cartData['fullPrice'].toString(),
+                                        productImg: imageUrl,
+                                        deliveryTime:
+                                            cartData['deliveryTime'].toString(),
+                                        isSale: cartData['isSale'],
+                                        productDescription:
+                                            cartData['productDescription']
+                                                .toString(),
+                                        createdAt: cartData['createdAt'],
+                                        updatedAt: cartData['updatedAt'],
+                                        productQuantity:
+                                            cartData['productQuantity'],
+                                        productTotalPrice: (double.tryParse(
+                                                cartData['productTotalPrice']
+                                                    .toString()) ??
+                                            0.0));
+                                                        
+                                    productPriceController.fetchProductPrice();
+                                    return SwipeActionCell(
+                                      key: ObjectKey(cartModel.productId),
+                                      backgroundColor: AppConstant.appSecondaryColor,
+                                      trailingActions: [
+                                        SwipeAction(
+                                          onTap: (CompletionHandler handler) async {
+                                            if (kDebugMode) {
+                                              print('deleted');
+                                            }
+                                                        
+                                            await FirebaseFirestore.instance
+                                                .collection('cart')
+                                                .doc(user?.uid)
+                                                .collection('cartOrders')
+                                                .doc(cartModel.productId)
+                                                .delete();
+                                          },
+                                          title: 'DELETE',
+                                          forceAlignmentToBoundary: true,
+                                          performsFirstActionWithFullSwipe: true,
+                                          color: AppConstant.radColor,
+                                        )
+                                      ],
+                                      child: cartItemCard(cartModel: cartModel),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           ),
-                          SizedBox(
-                            height: 100,
-                            width: double.infinity,
-                            child: Container(
-                              color: AppConstant.appMainColor,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 25),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "Total Price",
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                AppConstant.appSecondaryColor,
-                                          ),
-                                        ),
-                                        Obx(
-                                          () => Text(
-                                            'रु ${productPriceController.totalPrice.value.toString()}',
-                                            style: const TextStyle(
-                                              fontSize: 14,
+                          RubberBand(
+                            child: SizedBox(
+                              height: 100,
+                              width: double.infinity,
+                              child: Container(
+                                color: AppConstant.appMainColor,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 25),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Total Price",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                               color:
                                                   AppConstant.appSecondaryColor,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showCustomBottomSheet();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              color: AppConstant.appSecondaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  "Confirm Order",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppConstant.appMainColor),
-                                                ),
-                                                SizedBox(
-                                                  width: 6,
-                                                ),
-                                                Icon(Icons.arrow_forward,
-                                                    color: AppConstant.appMainColor),
-                                              ],
+                                          Obx(
+                                            () => Text(
+                                              'रु ${productPriceController.totalPrice.value.toString()}',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color:
+                                                    AppConstant.appSecondaryColor,
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    GestureDetector(
+                                      onTap: () {
+                                        showCustomBottomSheet();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                color: AppConstant.appSecondaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  const Text(
+                                                    "Confirm Order",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: AppConstant.appMainColor),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 6,
+                                                  ),
+                                                  Icon(Icons.arrow_forward,
+                                                      color: AppConstant.appMainColor),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -285,15 +293,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Product Image
-                CachedNetworkImage(
-                  imageUrl: cartModel.productImg,
-                  height: 80,
-                  width: 100,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ColorFiltered(
+                  colorFilter: ColorFilter.mode(AppConstant.gray, BlendMode.multiply),
+                  child: CachedNetworkImage(
+                    imageUrl: cartModel.productImg,
+                    height: 80,
+                    width: 100,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 10),
 
                 // Product Details
                 Expanded(
@@ -303,14 +314,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Text(
                         cartModel.productName,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold  ,color: AppConstant.appMainColor2,),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstant.appMainColor2),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                      ),  const SizedBox(height: 4),
+                      ),
+                      const SizedBox(height: 4),
                       Text(
                         cartModel.productDescription,
-                        style:
-                            const TextStyle(fontSize: 14,   color: AppConstant.decColor,),
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: AppConstant.appTextColor,
+                            fontWeight: FontWeight.normal),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),

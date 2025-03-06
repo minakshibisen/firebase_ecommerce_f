@@ -10,6 +10,7 @@ import 'package:firebase_ecommerce_f/widgets/category_widget.dart';
 import 'package:firebase_ecommerce_f/widgets/flash_sale_widget.dart';
 import 'package:firebase_ecommerce_f/widgets/heading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/banner_widget.dart';
@@ -24,6 +25,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppConstant.appSecondaryColor,
       appBar: AppBar(
@@ -31,16 +33,14 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: AppConstant.appMainColor,
         toolbarHeight: 80,
         centerTitle: true,
-
-        // Leading Icon (Menu)
         leading: Builder(
           builder: (context) => GestureDetector(
             onTap: () {
               Scaffold.of(context).openDrawer();
             },
             child: Container(
-              margin: const EdgeInsets.all(8.0), // Consistent margin
-              width: 40, // Ensure same size
+              margin: const EdgeInsets.all(8.0),
+              width: 40,
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -54,8 +54,6 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ),
-
-        // Title
         title: Text(
           AppConstant.appMainName,
           textAlign: TextAlign.center,
@@ -64,38 +62,33 @@ class _MainScreenState extends State<MainScreen> {
             fontSize: 25,
           ),
         ),
-
-        // Action Icon (Shopping Bag)
         actions: [
           Builder(
-            builder: (context) =>GestureDetector(
-              onTap:(){
-                Get.to(()=>AllCategoryScreen());
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10.0), // Align with leading
-                child: Container(
-                  margin: const EdgeInsets.all(8.0), // Same margin as leading
-                  width: 40, // Same width & height
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
+            builder: (context) => GestureDetector(
+                onTap: () {
+                  Get.to(() => AllCategoryScreen());
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 25,
+                      color: AppConstant.appMainColor2,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.shopping_bag_outlined,
-                    size: 25,
-                    color: AppConstant.appMainColor2,
-                  ),
-                ),
-              )
-
-          ),    )
+                )),
+          )
         ],
       ),
-
-
-      drawer:Drawer(
+      drawer: Drawer(
         backgroundColor: AppConstant.gray,
         child: Column(
           children: [
@@ -148,7 +141,6 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 15),
             Expanded(
               child: ListView(

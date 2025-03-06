@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_ecommerce_f/controllers/banners_controller.dart';
@@ -20,30 +21,32 @@ class _BannerWidgetState extends State<BannerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Obx(() {
-        return CarouselSlider(
-            items: bannersController.bannerUrls
-                .map((imageUrls) => ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: CachedNetworkImage(
-                          imageUrl: imageUrls,
-                          fit: BoxFit.cover,
-                          width: Get.width - 10,
-                          placeholder: (context, url) => ColoredBox(
-                              color: AppConstant.appMainColor,
-                              child: Center(
-                                child: CupertinoActivityIndicator(),
-                              )),
-                      errorWidget: (context,url,error)=>Icon(Icons.error),),
-                    ))
-                .toList(),
-            options: CarouselOptions(
-                autoPlay: true,
-                aspectRatio: 2.5,
-                viewportFraction: 1,
-                scrollDirection: Axis.horizontal));
-      }),
+    return RubberBand(
+      child: Container(
+        child: Obx(() {
+          return CarouselSlider(
+              items: bannersController.bannerUrls
+                  .map((imageUrls) => ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: CachedNetworkImage(
+                            imageUrl: imageUrls,
+                            fit: BoxFit.cover,
+                            width: Get.width - 10,
+                            placeholder: (context, url) => ColoredBox(
+                                color: AppConstant.appMainColor,
+                                child: Center(
+                                  child: CupertinoActivityIndicator(),
+                                )),
+                        errorWidget: (context,url,error)=>Icon(Icons.error),),
+                      ))
+                  .toList(),
+              options: CarouselOptions(
+                  autoPlay: true,
+                  aspectRatio: 2.5,
+                  viewportFraction: 1,
+                  scrollDirection: Axis.horizontal));
+        }),
+      ),
     );
   }
 }

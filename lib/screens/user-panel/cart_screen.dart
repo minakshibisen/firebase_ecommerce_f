@@ -1,9 +1,11 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ecommerce_f/controllers/product_price_controller.dart';
 import 'package:firebase_ecommerce_f/models/cart_model.dart';
 import 'package:firebase_ecommerce_f/screens/user-panel/checkout_screen.dart';
+import 'package:firebase_ecommerce_f/screens/user-panel/main_screen.dart';
 import 'package:firebase_ecommerce_f/utils/app-constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -32,6 +34,9 @@ class _CartScreenState extends State<CartScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: GestureDetector(
+            onTap: (){
+              Get.to(()=>CartScreen());
+            },
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: Container(
@@ -86,82 +91,85 @@ class _CartScreenState extends State<CartScreen> {
               }
               if (snapshot.data != null) {
                 return SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 20),
-                    child: Container(
-                      color: AppConstant.appSecondaryColor,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: snapshot.data!.docs.length,
-                              shrinkWrap: true,
-                              physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final cartData = snapshot.data!.docs[index];
-                                print(cartData['productTotalPrice']);
-                                String imageUrl;
-                                if (cartData['productImg'] is List &&
-                                    cartData['productImg'].isNotEmpty) {
-                                  imageUrl = cartData['productImg'][0];
-                                } else {
-                                  imageUrl = cartData['productImg'].toString();
-                                }
-                                CartModel cartModel = CartModel(
-                                    productId: cartData['productId'].toString(),
-                                    catId: cartData['catId'].toString(),
-                                    productName:
-                                        cartData['productName'].toString(),
-                                    catName: cartData['catName'].toString(),
-                                    salePrice: cartData['salePrice'].toString(),
-                                    fullPrice: cartData['fullPrice'].toString(),
-                                    productImg: imageUrl,
-                                    deliveryTime:
-                                        cartData['deliveryTime'].toString(),
-                                    isSale: cartData['isSale'],
-                                    productDescription:
-                                        cartData['productDescription']
-                                            .toString(),
-                                    createdAt: cartData['createdAt'],
-                                    updatedAt: cartData['updatedAt'],
-                                    productQuantity:
-                                        cartData['productQuantity'],
-                                    productTotalPrice: (double.tryParse(
-                                            cartData['productTotalPrice']
-                                                .toString()) ??
-                                        0.0));
-                                productPriceController.fetchProductPrice();
-                                return SwipeActionCell(
-                                  key: ObjectKey(cartModel.productId),
-                                  backgroundColor:
-                                      AppConstant.appSecondaryColor,
-                                  trailingActions: [
-                                    SwipeAction(
-                                      onTap: (CompletionHandler handler) async {
-                                        if (kDebugMode) {
-                                          print('deleted');
-                                        }
-                                        await FirebaseFirestore.instance
-                                            .collection('cart')
-                                            .doc(user?.uid)
-                                            .collection('cartOrders')
-                                            .doc(cartModel.productId)
-                                            .delete();
-                                      },
-                                      title: 'DELETE',
-                                      forceAlignmentToBoundary: true,
-                                      performsFirstActionWithFullSwipe: true,
-                                      color: AppConstant.radColor,
-                                    )
-                                  ],
-                                  child: cartItemCard(cartModel: cartModel),
-                                );
-                              },
+                  child: Container(
+                    color: AppConstant.appSecondaryColor,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: RubberBand(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15.0,horizontal: 20),
+                              child: ListView.builder(
+                                itemCount: snapshot.data!.docs.length,
+                                shrinkWrap: true,
+                                physics: BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final cartData = snapshot.data!.docs[index];
+                                  print(cartData['productTotalPrice']);
+                                  String imageUrl;
+                                  if (cartData['productImg'] is List &&
+                                      cartData['productImg'].isNotEmpty) {
+                                    imageUrl = cartData['productImg'][0];
+                                  } else {
+                                    imageUrl = cartData['productImg'].toString();
+                                  }
+                                  CartModel cartModel = CartModel(
+                                      productId: cartData['productId'].toString(),
+                                      catId: cartData['catId'].toString(),
+                                      productName:
+                                          cartData['productName'].toString(),
+                                      catName: cartData['catName'].toString(),
+                                      salePrice: cartData['salePrice'].toString(),
+                                      fullPrice: cartData['fullPrice'].toString(),
+                                      productImg: imageUrl,
+                                      deliveryTime:
+                                          cartData['deliveryTime'].toString(),
+                                      isSale: cartData['isSale'],
+                                      productDescription:
+                                          cartData['productDescription']
+                                              .toString(),
+                                      createdAt: cartData['createdAt'],
+                                      updatedAt: cartData['updatedAt'],
+                                      productQuantity:
+                                          cartData['productQuantity'],
+                                      productTotalPrice: (double.tryParse(
+                                              cartData['productTotalPrice']
+                                                  .toString()) ??
+                                          0.0));
+                                  productPriceController.fetchProductPrice();
+                                  return SwipeActionCell(
+                                    key: ObjectKey(cartModel.productId),
+                                    backgroundColor:
+                                        AppConstant.appSecondaryColor,
+                                    trailingActions: [
+                                      SwipeAction(
+                                        onTap: (CompletionHandler handler) async {
+                                          if (kDebugMode) {
+                                            print('deleted');
+                                          }
+                                          await FirebaseFirestore.instance
+                                              .collection('cart')
+                                              .doc(user?.uid)
+                                              .collection('cartOrders')
+                                              .doc(cartModel.productId)
+                                              .delete();
+                                        },
+                                        title: 'DELETE',
+                                        forceAlignmentToBoundary: true,
+                                        performsFirstActionWithFullSwipe: true,
+                                        color: AppConstant.radColor,
+                                      )
+                                    ],
+                                    child: cartItemCard(cartModel: cartModel),
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                          SizedBox(
+                        ),
+                        RubberBand(
+                          child: SizedBox(
                             height: 100,
                             width: double.infinity,
                             child: Container(
@@ -172,7 +180,7 @@ class _CartScreenState extends State<CartScreen> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 25),
+                                        horizontal: 10, vertical: 20),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
@@ -239,8 +247,8 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -251,6 +259,8 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget cartItemCard({required CartModel cartModel}) {
     return Card(
+      shadowColor:
+          Colors.black26,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       color: AppConstant.gray,
       child: Padding(
@@ -261,15 +271,18 @@ class _CartScreenState extends State<CartScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Product Image
-                CachedNetworkImage(
-                  imageUrl: cartModel.productImg,
-                  height: 80,
-                  width: 100,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ColorFiltered(
+                  colorFilter: ColorFilter.mode(AppConstant.gray, BlendMode.multiply),
+                  child: CachedNetworkImage(
+                    imageUrl: cartModel.productImg,
+                    height: 80,
+                    width: 100,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 10),
 
                 // Product Details
                 Expanded(
@@ -290,7 +303,7 @@ class _CartScreenState extends State<CartScreen> {
                         cartModel.productDescription,
                         style: const TextStyle(
                             fontSize: 14,
-                            color: AppConstant.decColor,
+                            color: AppConstant.appTextColor,
                             fontWeight: FontWeight.normal),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
